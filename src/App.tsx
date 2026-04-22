@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
 export default function App() {
-  const [orbit, setOrbit] = useState(0);
-  const [signal, setSignal] = useState(97);
+  const [, setOrbit] = useState(0);
+  const [, setSignal] = useState(97);
   const [activeIndex, setActiveIndex] = useState(0);
   const [metrics, setMetrics] = useState({
     buildTime: 2.45,
