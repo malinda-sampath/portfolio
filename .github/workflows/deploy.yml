@@ -2,10 +2,10 @@ name: Deploy Portfolio
 
 on:
   push:
-    branches: [main]
+    branches: ["main"]
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
