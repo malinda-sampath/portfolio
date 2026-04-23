@@ -4,8 +4,8 @@ import { motion } from "framer-motion";
 export default function App() {
   const [, setOrbit] = useState(0);
   const [, setSignal] = useState(97);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [metrics, setMetrics] = useState({
+  const [, setActiveIndex] = useState(0);
+  const [, setMetrics] = useState({
     buildTime: 2.45,
     deploymentProgress: 65,
     systemUptime: 99.98,
@@ -29,14 +29,6 @@ export default function App() {
     "Restoration complete — portfolio returning online 🚀"
   ]);
 
-  const techStack = [
-    { label: "React", version: "18.2+" },
-    { label: "TypeScript", version: "5.0+" },
-    { label: "Vite", version: "5.0+" },
-    { label: "Tailwind CSS", version: "3.4+" },
-    { label: "Framer Motion", version: "10.16+" },
-    { label: "GitHub Actions", version: "CI/CD" },
-  ];
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -102,173 +94,10 @@ export default function App() {
             MAINTENANCE WINDOW
           </h1>
           <p className="text-lg text-slate-300 mb-2">malinda.dev Portfolio System — Scheduled Upgrade</p>
-          <p className="text-sm text-orange-400 font-mono">Expected restoration: Unknown</p>
+          <p className="text-sm text-orange-400 font-mono">Expected restoration: N/A</p>
         </motion.div>
 
-        {/* Main Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          {/* LEFT - Maintenance Status */}
-          <motion.div
-            variants={itemVariants}
-            className="bg-slate-900/40 border border-orange-500/30 rounded-2xl p-8 backdrop-blur-xl hover:border-orange-400/60 transition-all"
-          >
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-3 h-3 bg-orange-400 rounded-full animate-pulse" />
-              <h2 className="text-xl font-bold text-orange-400">Maintenance Status</h2>
-            </div>
-
-            <div className="relative w-full h-64 flex items-center justify-center mb-6">
-              {/* Progress circle */}
-              <div className="relative w-32 h-32 flex items-center justify-center">
-                <svg className="w-full h-full -rotate-90" viewBox="0 0 120 120">
-                  <circle cx="60" cy="60" r="55" fill="none" stroke="rgba(100, 116, 139, 0.2)" strokeWidth="8" />
-                  <motion.circle
-                    cx="60"
-                    cy="60"
-                    r="55"
-                    fill="none"
-                    stroke="url(#grad)"
-                    strokeWidth="8"
-                    strokeDasharray="345"
-                    initial={{ strokeDashoffset: 345 }}
-                    animate={{ strokeDashoffset: 345 - (metrics.deploymentProgress / 100) * 345 }}
-                    transition={{ duration: 0.5 }}
-                  />
-                  <defs>
-                    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#fb923c" />
-                      <stop offset="100%" stopColor="#f59e0b" />
-                    </linearGradient>
-                  </defs>
-                </svg>
-                <div className="absolute text-center">
-                  <div className="text-2xl font-bold text-orange-400">{metrics.deploymentProgress.toFixed(0)}%</div>
-                  <div className="text-xs text-slate-400 mt-1">Complete</div>
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span className="text-slate-400">Elapsed Time</span>
-                <span className="text-orange-400 font-mono">42m</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-slate-400">Estimated Remaining</span>
-                <span className="text-orange-400 font-mono">18m - 38m</span>
-              </div>
-            </div>
-
-            <div className="mt-6 pt-6 border-t border-slate-700/50 text-xs text-slate-400">
-              <div className="flex justify-between mb-1">
-                <span>Status</span>
-                <span className="text-orange-400">In Progress</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Started</span>
-                <span className="text-slate-300">12:30 UTC</span>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* CENTER - Maintenance Log */}
-          <motion.div
-            variants={itemVariants}
-            className="lg:col-span-1 bg-slate-900/40 border border-yellow-500/30 rounded-2xl p-8 backdrop-blur-xl hover:border-yellow-400/60 transition-all"
-          >
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-3 h-3 bg-yellow-400 rounded-full animate-pulse" />
-              <h2 className="text-xl font-bold text-yellow-400">Maintenance Log</h2>
-            </div>
-
-            <div className="h-64 overflow-y-auto space-y-1 font-mono text-xs">
-              {messages.map((msg, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: i <= activeIndex ? 1 : 0.3, x: 0 }}
-                  transition={{ duration: 0.5 }}
-                  className={`flex gap-2 ${i === activeIndex ? "text-yellow-400" : "text-slate-500"}`}
-                >
-                  <span className="flex-shrink-0">▸</span>
-                  <span>{msg}</span>
-                </motion.div>
-              ))}
-            </div>
-
-            <motion.div
-              className="mt-4 text-center text-yellow-400 font-bold text-sm"
-              animate={{ opacity: [0.4, 1, 0.4] }}
-              transition={{ repeat: Infinity, duration: 1.5 }}
-            >
-              ⚙ MAINTENANCE IN PROGRESS
-            </motion.div>
-          </motion.div>
-
-          {/* RIGHT - What's Being Improved */}
-          <motion.div
-            variants={itemVariants}
-            className="bg-slate-900/40 border border-blue-500/30 rounded-2xl p-8 backdrop-blur-xl hover:border-blue-400/60 transition-all"
-          >
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-3 h-3 bg-blue-400 rounded-full animate-pulse" />
-              <h2 className="text-xl font-bold text-blue-400">Improvements</h2>
-            </div>
-
-            <div className="space-y-4 text-sm">
-              <div className="pb-4 border-b border-slate-700/50">
-                <p className="text-slate-400 mb-1">Design Refresh</p>
-                <p className="text-blue-300">Modern UI/UX with improved performance metrics</p>
-              </div>
-
-              <div className="pb-4 border-b border-slate-700/50">
-                <p className="text-slate-400 mb-1">Code Quality</p>
-                <p className="text-blue-300">React 18+, TypeScript stricter types, better error handling</p>
-              </div>
-
-              <div className="pb-4 border-b border-slate-700/50">
-                <p className="text-slate-400 mb-1">Performance</p>
-                <p className="text-blue-300">Optimized builds (2.45s), code splitting, asset minification</p>
-              </div>
-
-              <div className="pb-4 border-b border-slate-700/50">
-                <p className="text-slate-400 mb-1">Security</p>
-                <p className="text-blue-300">Enhanced routing validation, dependency audit, SSL/TLS</p>
-              </div>
-
-              <div>
-                <p className="text-slate-400 mb-1">Infrastructure</p>
-                <p className="text-blue-300">GitHub Actions CI/CD optimization, Pages deployment automation</p>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Tech Stack Section */}
-        <motion.div
-          variants={itemVariants}
-          className="bg-slate-900/40 border border-slate-700/50 rounded-2xl p-8 backdrop-blur-xl"
-        >
-          <h3 className="text-lg font-bold text-slate-200 mb-6 flex items-center gap-2">
-            <span className="text-amber-400">→</span> Production Stack
-          </h3>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {techStack.map((tech, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1 }}
-                className="bg-slate-800/50 border border-slate-700 rounded-lg p-4 hover:bg-slate-700/50 transition-all group cursor-pointer"
-              >
-                <div className="font-semibold text-sm text-slate-200 group-hover:text-cyan-400 transition-colors">
-                  {tech.label}
-                </div>
-                <div className="text-xs text-slate-500 mt-1">{tech.version}</div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
+        
 
         {/* Maintenance Notice Footer */}
         <motion.div variants={itemVariants} className="mt-12 pt-8 border-t border-slate-700/50">
@@ -280,15 +109,15 @@ export default function App() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
               <div>
                 <p className="text-slate-400">Started</p>
-                <p className="text-orange-400 font-mono">12:30 UTC</p>
+                <p className="text-orange-400 font-mono">N/A</p>
               </div>
               <div>
                 <p className="text-slate-400">Est. Complete</p>
-                <p className="text-orange-400 font-mono">14:00 - 14:30 UTC</p>
+                <p className="text-orange-400 font-mono">N/A</p>
               </div>
               <div>
                 <p className="text-slate-400">Duration</p>
-                <p className="text-orange-400 font-mono">1-2 hours</p>
+                <p className="text-orange-400 font-mono">N/A</p>
               </div>
               <div>
                 <p className="text-slate-400">Status</p>
