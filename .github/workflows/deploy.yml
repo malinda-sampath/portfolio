@@ -2,7 +2,7 @@ name: Deploy Portfolio
 
 on:
   push:
-    branches: ["maintenance/v1"]
+    branches: ["main"]
 
 jobs:
   deploy:
