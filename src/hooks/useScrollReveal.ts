@@ -1,4 +1,5 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import type { RefObject } from "react";
 
 type UseScrollRevealOptions = {
   threshold?: number | number[];
@@ -7,10 +8,10 @@ type UseScrollRevealOptions = {
 
 const useScrollReveal = (
   options: UseScrollRevealOptions = {},
-): readonly [React.RefObject<HTMLElement | null>, boolean] => {
+): readonly [RefObject<HTMLDivElement | null>, boolean] => {
   const { threshold = 0.1, rootMargin = "0px" } = options;
   const [isRevealed, setIsRevealed] = useState<boolean>(false);
-  const ref = useRef<HTMLElement | null>(null);
+  const ref = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const element = ref.current;

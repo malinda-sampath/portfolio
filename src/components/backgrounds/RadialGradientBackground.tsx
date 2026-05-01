@@ -1,5 +1,3 @@
-const RadialGradientBackgroud = () => {
-  return <div>Radial Gradient Backgroud </div>;
-};
+const RadialGradientBackgroud = () => {};
 
 export default RadialGradientBackgroud;
