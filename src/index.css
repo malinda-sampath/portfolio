@@ -99,6 +99,16 @@
     }
   }
 
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .animate-spin-slow {
+    animation: spin 6s linear infinite;
+  }
+
   /* Line Clamp */
   .line-clamp-2 {
     display: -webkit-box;
