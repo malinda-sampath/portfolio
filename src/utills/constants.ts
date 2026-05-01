@@ -1,6 +1,6 @@
 export const PERSONAL_INFO = {
   name: "Malinda Sampath",
-  title: "Full Stack Developer",
+  title: "Full Stack Developer & DevOps Enthusiast",
   email: "malindasampath45@gmail.com",
   location: "Sri Lanka",
   tagline: "Passionate about crafting efficient and scalable web applications.",
@@ -22,10 +22,10 @@ export const SOCIAL_LINKS = {
 };
 
 export const STATS = [
-  { label: "Years of Experience", value: "1+" },
-  { label: "Projects Completed", value: "5+" },
-  { label: "Technologies Used", value: "10+" },
-  { label: "Client Satisfaction", value: "95%" },
+  { label: "Years Experience", value: "1+ " },
+  { label: "Projects Completed", value: "5+ " },
+  { label: "Technologies Used", value: "10+ " },
+  { label: "Client Satisfaction", value: "95% " },
 ];
 
 export const PERSONAL_STATS = [
