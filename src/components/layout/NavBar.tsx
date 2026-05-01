@@ -35,11 +35,11 @@ const NavBar = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center gap-5">
-            <Code className="w-6 h-6 text-amber-500" />
+            <Code className="w-6 h-6 text-primary" />
 
             <button
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-              className="text-2xl font-bold bg-linear-to-r from-amber-500 via-amber-500/50 to-amber-500/30 bg-clip-text text-transparent hover:opacity-80 transition-opacity"
+              className="text-2xl font-bold bg-linear-to-r from-primary via-primary/50 to-primary/30 bg-clip-text text-transparent hover:opacity-80 transition-opacity"
               aria-label="home"
             >
               {/* {PERSONAL_INFO.name.split(" ")[0]} */}
@@ -68,11 +68,52 @@ const NavBar = () => {
           <div className="hidden md:flex items-center gap-2">
             <button
               onClick={() => handleNavClick("contact")}
-              className="px-7 py-3 bg-amber-500 text-[#212121] font-bold text-base rounded-[17px] border border-amber-500 hover:bg-amber-500/90 transition-all duration-300"
+              className="px-7 py-3 bg-primary text-[#212121] font-bold text-base rounded-[17px] border border-primary hover:bg-primary/90 transition-all duration-300"
             >
               Hire Me
             </button>
           </div>
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="md:hidden p-4 text-white hover:text-white/80 transition-colors"
+            aria-label="menu"
+            aria-expanded={isMenuOpen}
+          >
+            {isMenuOpen ? (
+              <X className="w-6 h-6" />
+            ) : (
+              <Menu className="w-6 h-6" />
+            )}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Menu */}
+      <div
+        className={`md:hidden transform-all duration-300 overflow-hidden ${isMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}
+      >
+        <div className="bg-black/90 backdrop-blur-lg border-t border-white/10 px-5 py-6 space-y-3">
+          {NAV_LINKS.map((link) => (
+            <button
+              key={link.id}
+              onClick={() => handleNavClick(link.id)}
+              className={`block w-full text-left px-4 py-3 rounded-lg font-medium transition-all duration-300 ${
+                activeSection === link.id
+                  ? "text-white bg-white/10"
+                  : "text-white/70 hover:text-white hover:bg-white/10"
+              }`}
+            >
+              {link.label}
+            </button>
+          ))}
+          <button
+            onClick={() => handleNavClick("contact")}
+            className="w-full px-7 py-3 bg-primary text-[#212121] font-bold text-base rounded-lg border border-primary hover:bg-primary/90 transition-all duration-300 mt-2"
+          >
+            Hire Me
+          </button>
         </div>
       </div>
     </nav>
