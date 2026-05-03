@@ -4,12 +4,12 @@ import { SiReact, SiNextdotjs, SiTailwindcss, SiMongodb } from "react-icons/si";
 import { PERSONAL_INFO, STATS } from "../../utills/constants";
 import { scrollToSection } from "../../hooks/useScrollSpy";
 import FadeIn from "../animations/Fadein";
-import RadialGradientBackgroud from "../backgrounds/RadialGradientBackground";
+import RadialGradientBackground from "../backgrounds/RadialGradientBackground";
 
 const Hero = () => {
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden bg-black">
-      {/* <RadialGradientBackgroud variant="hero" /> */}
+      <RadialGradientBackground variant="hero" />
 
       {/* Content Container */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 w-full">
