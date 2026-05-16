@@ -79,6 +79,95 @@ const About = () => {
               </FadeIn>
             </div>
           </div>
+
+          {/* Right Column - Info Grid */}
+          <FadeIn delay={200}>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="col-span-2 relative group">
+                <div className="absolute inset-0 bg-linear-to-br from-primary/10 to-primary/5 rounded-2xl blur-xl opacity-50 group-hover:opacity-75 transition-opacity duration-300"></div>
+                <div className="relative bg-white/5 border border-white/10 rounded-2xl p-6 hover:border-primary/30 transition-all duration-300 h-full">
+                  <div className="flex items-start gap-4">
+                    <div className="p-3 bg-amber-10 rounded-xl">
+                      <Code2 className="w-6 h-6 text-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold text-white mb-2">
+                        Expertise
+                      </h3>
+                      <p className="text-sm text-white/70 leading-relaxed">
+                        Specializing in building responsive and performant web
+                        applications using React.js, Next.js, Tailwind CSS, and
+                        MongoDB.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="relative group">
+                <div className="absolute inset-0 bg-linear-to-br from-primary/10 to-primary/5 rounded-2xl blur-xl opacity-50 group-hover:opacity-75 transition-opacity duration-300"></div>
+                <div className="relative bg-white/5 border border-white/10 rounded-2xl p-6 hover:border-primary/30 transition-all duration-300 h-full">
+                  <div className="p-3 bg-primary/10 rounded-xl w-fit mb-4">
+                    <Sparkle className="w-5 h-5 text-primary" />
+                  </div>
+                  <h3 className="text-base font-semibold text-white mb-2">
+                    Clean Code
+                  </h3>
+                  <p className="text-sm text-white/70 leading-relaxed">
+                    Writing clean, maintainable, and efficient code is a core
+                    principle of my development process, ensuring long-term
+                    project success.
+                  </p>
+                </div>
+              </div>
+
+              <div className="relative group">
+                <div className="absolute inset-0 bg-linear-to-br from-primary/10 to-primary/5 rounded-2xl blur-xl opacity-50 group-hover:opacity-75 transition-opacity duration-300"></div>
+                <div className="relative bg-white/5 border border-white/10 rounded-2xl p-6 hover:border-primary/30 transition-all duration-300 h-full">
+                  <div className="p-3 bg-primary/10 rounded-xl w-fit mb-4">
+                    <Download className="w-5 h-5 text-primary" />
+                  </div>
+                  <h3 className="text-base font-semibold text-white mb-2">
+                    Performance
+                  </h3>
+                  <p className="text-sm text-white/70 leading-relaxed">
+                    Optimizing web applications for speed and efficiency to
+                    provide the best possible user experience.
+                  </p>
+                </div>
+              </div>
+
+              <div className="col-span-2 relative group">
+                <div className="absolute inset-0 bg-linear-to-br from-primary/10 to-primary/5 rounded-2xl blur-xl opacity-50 group-hover:opacity-75 transition-opacity duration-300"></div>
+                <div className="relative bg-white/5 border border-white/10 rounded-2xl p-6 hover:border-primary/30 transition-all duration-300 h-full">
+                  <div className="grid grid-cols-3 gap-6 text-center">
+                    <div>
+                      <div className="text-2xl font-bold text-primary mb-1">
+                        100%
+                      </div>
+                      <div className="text-xs text-white/60">
+                        Client Satisfaction
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-2xl font-bold text-primary mb-1">
+                        24/7
+                      </div>
+                      <div className="text-xs text-white/60">
+                        Support Available
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-2xl font-bold text-primary mb-1">
+                        Fast
+                      </div>
+                      <div className="text-xs text-white/60">Delivery Time</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </FadeIn>
         </div>
       </div>
     </section>
