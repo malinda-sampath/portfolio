@@ -1,19 +1,15 @@
-import { useState } from "react";
 import { ChevronDown, Star } from "lucide-react";
 import { SiReact, SiNextdotjs, SiTailwindcss, SiMongodb } from "react-icons/si";
 import { PERSONAL_INFO, STATS } from "../../utills/constants";
 import { scrollToSection } from "../../hooks/useScrollSpy";
 import FadeIn from "../animations/Fadein";
-import RadialGradientBackground from "../backgrounds/RadialGradientBackground";
 
 const Hero = () => {
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden bg-black">
-      <RadialGradientBackground variant="hero" />
-
+    <section className="relative min-h-screen flex items-center overflow-hidden">
       {/* Content Container */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="grid grid-cols-1 sm:mt-5 lg:grid-cols-2 gap-12 items-center">
           {/* Left Column - Content */}
           <div className="text-left">
             <FadeIn delay={0}>
@@ -73,16 +69,12 @@ const Hero = () => {
           {/* Right Column - Image */}
           <FadeIn delay={200}>
             <div className="relative">
-              <div className="relative overflow-hidden rounded-2xl aspect 4/5 max-w-125 ml-auto group">
-                <div className="absolute inset-0 rounded-2xl overflow-hidden">
-                  <div className="absolute -inset-0.5 bg-linear-to-r from-primary/20 via-primary/10 to-primary animate-spin-slow rounded-2xl"></div>
-                </div>
-
+              <div className="relative overflow-hidden rounded-2xl aspect-[4/5] max-w-sm mx-auto lg:max-w-[31rem] lg:ml-auto group">
                 {/* Image Container */}
-                <div className="relative rounded-2xl overflow-hidden m-px h-[calc(100%-2px)]">
+                <div className="rounded-2xl overflow-hidden border border-white/10 shadow-lg transform hover:scale-105 transition duration-500">
                   <img
-                    src="/portfolio/images/portrait.png"
-                    alt="Developer at work"
+                    src="/portfolio/images/portrait-crop.png"
+                    alt="Developer"
                     className="w-full h-full object-cover"
                   />
                 </div>

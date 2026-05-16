@@ -34,6 +34,12 @@ export const PERSONAL_STATS = [
   { label: "GitHub Stars", value: "100+" },
 ];
 
+export const ABOUT_STATS = [
+  { label: "Happy Clients", value: "5+" },
+  { label: "Code Commits", value: "2.5k+" },
+  { label: "GitHub Stars", value: "100+" },
+];
+
 export const NAV_LINKS = [
   { id: "about", label: "About" },
   { id: "skills", label: "Skills" },
