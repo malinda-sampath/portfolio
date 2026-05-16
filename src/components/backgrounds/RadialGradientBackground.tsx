@@ -7,7 +7,7 @@ type GradientLayer = {
   delay?: string;
 };
 
-type RadialGradientVariant = "hero" | "about" | "custom";
+type RadialGradientVariant = "hero" | "about" | "full-page" | "custom";
 
 type RadialGradientBackgroundProps = {
   variant?: RadialGradientVariant;
@@ -18,10 +18,7 @@ const RadialGradientBackground = ({
   variant = "hero",
   gradients = [],
 }: RadialGradientBackgroundProps) => {
-  const variants: Record<
-    Exclude<RadialGradientVariant, "custom">,
-    GradientLayer[]
-  > = {
+  const variants: Record<Exclude<RadialGradientVariant, "custom">, GradientLayer[]> = {
     hero: [
       {
         position: "-top-40 -left-32",
@@ -64,14 +61,60 @@ const RadialGradientBackground = ({
         delay: "1s",
       },
     ],
+    "full-page": [
+      {
+        position: "-top-40 -left-32",
+        size: "h-[42rem] w-[42rem]",
+        color: "rgba(123, 255, 92, 0.75)",
+        blur: "120px",
+        opacity: 0.45,
+      },
+      {
+        position: "top-[8%] right-[6%]",
+        size: "h-[32rem] w-[32rem]",
+        color: "rgba(92, 232, 255, 0.55)",
+        blur: "100px",
+        opacity: 0.38,
+        delay: "1.2s",
+      },
+      {
+        position: "top-[40%] -left-16",
+        size: "h-[28rem] w-[28rem]",
+        color: "rgba(255, 210, 111, 0.45)",
+        blur: "110px",
+        opacity: 0.3,
+        delay: "2s",
+      },
+      {
+        position: "top-[55%] right-[10%]",
+        size: "h-[26rem] w-[26rem]",
+        color: "rgba(123, 255, 92, 0.62)",
+        blur: "95px",
+        opacity: 0.32,
+        delay: "0.8s",
+      },
+      {
+        position: "bottom-[5%] left-[28%]",
+        size: "h-[34rem] w-[34rem]",
+        color: "rgba(92, 232, 255, 0.48)",
+        blur: "115px",
+        opacity: 0.35,
+        delay: "1.6s",
+      },
+    ],
   };
 
   const activeGradients: GradientLayer[] =
     variant === "custom" ? gradients : variants[variant];
 
+  // Use "fixed" for full-page so it covers the entire viewport while scrolling,
+  // and "absolute" for section-scoped variants.
+  const positionClass = variant === "full-page" ? "fixed" : "absolute";
+
   return (
     <div
-      className="pointer-events-none absolute inset-0 overflow-hidden"
+      className={`pointer-events-none ${positionClass} inset-0 overflow-hidden`}
+      style={{ zIndex: 0 }}
       aria-hidden="true"
     >
       <div className="absolute inset-0 bg-[linear-gradient(160deg,rgba(6,12,10,0.95)_0%,rgba(7,20,14,0.9)_35%,rgba(8,10,16,0.96)_100%)]" />

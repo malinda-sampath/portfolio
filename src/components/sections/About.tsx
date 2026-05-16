@@ -2,7 +2,6 @@ import { Download, Code2, Sparkle } from "lucide-react";
 import { SiReact, SiNextdotjs, SiTailwindcss, SiMongodb } from "react-icons/si";
 import { PERSONAL_INFO, ABOUT_STATS } from "../../utills/constants";
 import FadeIn from "../animations/Fadein";
-import RadialGradientBackground from "../backgrounds/RadialGradientBackground";
 
 const About = () => {
   // Skills
@@ -17,9 +16,7 @@ const About = () => {
   ];
 
   return (
-    <section id="about" className="relative py-20 bg-black overflow-hidden">
-      <RadialGradientBackground variant="about" />
-
+    <section id="about" className="relative py-20 overflow-hidden">
       <div className="relative z-10 max-w-7xl mx-auto sm:px-6 lg:px-8">
         {/* Main Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-20">
