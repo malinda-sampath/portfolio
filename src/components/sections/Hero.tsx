@@ -9,7 +9,7 @@ const Hero = () => {
     <section className="relative min-h-screen flex items-center overflow-hidden">
       {/* Content Container */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 w-full">
-        <div className="grid grid-cols-1 sm:mt-5 lg:grid-cols-2 gap-12 items-center">
+        <div className="grid grid-cols-1 mt-8 sm:mt-8 lg:grid-cols-2 gap-12 items-center">
           {/* Left Column - Content */}
           <div className="text-left">
             <FadeIn delay={0}>

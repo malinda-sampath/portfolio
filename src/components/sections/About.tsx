@@ -16,7 +16,7 @@ const About = () => {
 
   return (
     <section id="about" className="relative py-20 overflow-hidden">
-      <div className="relative z-10 max-w-7xl mx-auto sm:px-6 lg:px-8">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Main Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-20">
           {/* Left Column - Content */}
@@ -52,7 +52,7 @@ const About = () => {
               </FadeIn>
 
               <FadeIn delay={300}>
-                <div className="grid grid-cols-3 gap-8">
+                <div className="grid grid-cols-3 gap-8 px-4">
                   {ABOUT_STATS.map((stat, index) => (
                     <div key={index} className="relative">
                       <div className="absolute -left-4 top-0 w-1 h-full bg-linear-to-b from-primary via-primary/50 to-primary/20 rounded-full"></div>
