@@ -1,19 +1,18 @@
 import { Download, Code2, Sparkle } from "lucide-react";
-import { SiReact, SiNextdotjs, SiTailwindcss, SiMongodb } from "react-icons/si";
 import { PERSONAL_INFO, ABOUT_STATS } from "../../utills/constants";
 import FadeIn from "../animations/Fadein";
 
 const About = () => {
   // Skills
-  const skills = [
-    { name: "React.js", icon: <SiReact className="w-6 h-6 text-primary" /> },
-    { name: "Next.js", icon: <SiNextdotjs className="w-6 h-6 text-primary" /> },
-    {
-      name: "Tailwind CSS",
-      icon: <SiTailwindcss className="w-6 h-6 text-primary" />,
-    },
-    { name: "MongoDB", icon: <SiMongodb className="w-6 h-6 text-primary" /> },
-  ];
+  // const skills = [
+  //   { name: "React.js", icon: <SiReact className="w-6 h-6 text-primary" /> },
+  //   { name: "Next.js", icon: <SiNextdotjs className="w-6 h-6 text-primary" /> },
+  //   {
+  //     name: "Tailwind CSS",
+  //     icon: <SiTailwindcss className="w-6 h-6 text-primary" />,
+  //   },
+  //   { name: "MongoDB", icon: <SiMongodb className="w-6 h-6 text-primary" /> },
+  // ];
 
   return (
     <section id="about" className="relative py-20 overflow-hidden">
