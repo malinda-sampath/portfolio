@@ -1,0 +1,24 @@
+name: Mirror GitHub to Azure Repo
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Push to Azure Repo
+        run: |
+          git remote add azure https://$AZURE_PAT@${AZURE_REPO_URL#https://}
+          git push azure --mirror
+        env:
+          AZURE_PAT: ${{ secrets.AZURE_PAT }}
+          AZURE_REPO_URL: ${{ secrets.AZURE_REPO_URL }}
