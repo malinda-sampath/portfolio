@@ -17,10 +17,11 @@ jobs:
 
       - name: Push to Azure Repo
         run: |
-          git remote add azure ${AZURE_REPO_URL/https:\/\//https://git:${AZURE_PAT}@}
+          git remote add azure $(echo $AZURE_REPO_URL | sed "s#https://#https://git:${AZURE_PAT}@#")
           git push azure --mirror
         env:
           AZURE_PAT: ${{ secrets.AZURE_PAT }}
           AZURE_REPO_URL: ${{ secrets.AZURE_REPO_URL }}
+
 
 
