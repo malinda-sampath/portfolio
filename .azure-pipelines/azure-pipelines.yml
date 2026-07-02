@@ -1,0 +1,45 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  - group: kv-secrets  
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '20.x'
+  displayName: 'Install Node.js'
+
+- script: |
+    npm ci
+    npm run build
+  displayName: 'Build React Vite app'
+
+# Build and push Docker image to ACR
+- task: Docker@2
+  inputs:
+    containerRegistry: '$(ACR-NAME)'   
+    repository: 'portfolio'
+    command: 'buildAndPush'
+    Dockerfile: '**/Dockerfile'
+    tags: |
+      $(Build.BuildId)
+
+# Deploy to AKS
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: '$(AZURE-CREDENTIALS)' 
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      az aks get-credentials \
+        --resource-group $(AKS-RG) \
+        --name $(AKS-CLUSTER) \
+        --overwrite-existing
+      kubectl set image deployment/portfolio portfolio=$(ACR-NAME).azurecr.io/portfolio:$(Build.BuildId)
+      kubectl rollout status deployment/portfolio
