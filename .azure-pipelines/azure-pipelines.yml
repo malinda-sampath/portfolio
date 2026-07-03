@@ -6,52 +6,59 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
-steps:
-# 1. Fetch secrets from Key Vault
-- task: AzureKeyVault@2
-  inputs:
-    azureSubscription: 'azure-sc-dev'   # Service connection name
-    KeyVaultName: 'malindaKeyVault01'
-    SecretsFilter: '*'
-    RunAsPreJob: false
+jobs:
+# 1. Fetch secrets
+- job: FetchSecrets
+  steps:
+    - task: AzureKeyVault@2
+      inputs:
+        azureSubscription: 'azure-sc-dev'
+        KeyVaultName: 'malindaKeyVault01'
+        SecretsFilter: '*'
+        RunAsPreJob: false
 
-# 2. Install Node.js
-- task: NodeTool@0
-  inputs:
-    versionSpec: '20.x'
-  displayName: 'Install Node.js'
+# 2. Build React app
+- job: BuildApp
+  dependsOn: FetchSecrets
+  steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '20.x'
+      displayName: 'Install Node.js'
 
-# 3. Build React Vite app
-- script: |
-    npm ci
-    npm run build
-  displayName: 'Build React Vite app'
+    - script: |
+        npm ci
+        npm run build
+      displayName: 'Build React Vite app'
 
-# 4. Build and push Docker image to ACR
-- task: Docker@2
-  inputs:
-    containerRegistry: 'azure-acr-sc'   # <-- ACR service connection name
-    repository: 'portfolio'
-    command: 'buildAndPush'
-    Dockerfile: 'Dockerfile'
-    tags: |
-      $(Build.BuildId)
+# 3. Build & push Docker image
+- job: BuildImage
+  dependsOn: BuildApp
+  steps:
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'azure-acr-sc'
+        repository: 'portfolio'
+        command: 'buildAndPush'
+        Dockerfile: 'Dockerfile'   # or portfolio/Dockerfile if in subfolder
+        tags: |
+          $(Build.BuildId)
 
-# 5. Deploy to AKS
-- task: AzureCLI@2
-  inputs:
-    azureSubscription: 'azure-sc-dev'
-    scriptType: 'bash'
-    scriptLocation: 'inlineScript'
-    inlineScript: |
-      az aks get-credentials \
-        --resource-group $(AKS-RESOURCE-GROUP) \
-        --name $(AKS-CLUSTER) \
-        --overwrite-existing
+# 4. Deploy to AKS
+- job: Deploy
+  dependsOn: BuildImage
+  steps:
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: 'azure-sc-dev'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          az aks get-credentials \
+            --resource-group $(AKS-RESOURCE-GROUP) \
+            --name $(AKS-CLUSTER) \
+            --overwrite-existing
 
-      # Apply manifests (create or update)
-      kubectl apply -f k8s/deployment.yaml
-      kubectl apply -f k8s/service.yaml
-
-      # Wait for rollout
-      kubectl rollout status deployment/portfolio
+          kubectl apply -f k8s/deployment.yaml
+          kubectl apply -f k8s/service.yaml
+          kubectl rollout status deployment/portfolio
