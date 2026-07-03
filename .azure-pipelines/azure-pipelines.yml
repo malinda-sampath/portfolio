@@ -40,7 +40,7 @@ steps:
 # 5. Deploy to AKS
 - task: AzureCLI@2
   inputs:
-    azureSubscription: 'azure-sc-dev'   # <-- same service connection
+    azureSubscription: 'azure-sc-dev'
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
     inlineScript: |
@@ -49,5 +49,9 @@ steps:
         --name $(AKS-CLUSTER) \
         --overwrite-existing
 
-      kubectl set image deployment/portfolio portfolio=$(ACR-NAME).azurecr.io/portfolio:$(Build.BuildId)
+      # Apply manifests (create or update)
+      kubectl apply -f k8s/deployment.yaml
+      kubectl apply -f k8s/service.yaml
+
+      # Wait for rollout
       kubectl rollout status deployment/portfolio
