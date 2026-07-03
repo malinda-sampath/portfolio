@@ -7,20 +7,16 @@ pool:
   vmImage: 'ubuntu-latest'
 
 jobs:
-# 1. Fetch secrets
-- job: FetchSecrets
+- job: CI_CD
   steps:
+    # 1. Fetch secrets
     - task: AzureKeyVault@2
       inputs:
         azureSubscription: 'azure-sc-dev'
         KeyVaultName: 'malindaKeyVault01'
-        SecretsFilter: '*'
-        RunAsPreJob: true
+        SecretsFilter: 'AKS-RESOURCE-GROUP,AKS-CLUSTER'
 
-# 2. Build React app
-- job: BuildApp
-  dependsOn: FetchSecrets
-  steps:
+    # 2. Build React app
     - task: NodeTool@0
       inputs:
         versionSpec: '20.x'
@@ -31,30 +27,24 @@ jobs:
         npm run build
       displayName: 'Build React Vite app'
 
-# 3. Build & push Docker image
-- job: BuildImage
-  dependsOn: BuildApp
-  steps:
+    # 3. Build & push Docker image
     - task: Docker@2
       inputs:
         containerRegistry: 'azure-acr-sc'
         repository: 'portfolio'
         command: 'buildAndPush'
-        Dockerfile: 'Dockerfile'   # or portfolio/Dockerfile if in subfolder
+        Dockerfile: 'Dockerfile'
         tags: |
           $(Build.BuildId)
 
-# 4. Deploy to AKS
-- job: Deploy
-  dependsOn: BuildImage
-  steps:
+    # 4. Deploy to AKS
     - task: AzureCLI@2
       inputs:
         azureSubscription: 'azure-sc-dev'
         scriptType: 'bash'
         scriptLocation: 'inlineScript'
         inlineScript: |
-          echo "Using RG=$AKS_RESOURCE_GROUP, Cluster=$AKS_CLUSTER"
+          echo "RG=$AKS_RESOURCE_GROUP, Cluster=$AKS_CLUSTER"
 
           az aks get-credentials \
             --resource-group $AKS_RESOURCE_GROUP \
@@ -65,6 +55,5 @@ jobs:
           kubectl apply -f k8s/service.yaml
           kubectl rollout status deployment/portfolio
 
-          # Print external IP for quick access
+          echo "Public IP:"
           kubectl get service portfolio-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
-
