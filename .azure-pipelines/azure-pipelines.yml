@@ -7,8 +7,8 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  AKS_RESOURCE_GROUP: 'your-resource-group-name' 
-  AKS_CLUSTER: 'your-aks-cluster-name'            
+  AKS_RESOURCE_GROUP: 'myResourceGroup' 
+  AKS_CLUSTER: 'mySingleNodeCluster'            
 
 jobs:
 
