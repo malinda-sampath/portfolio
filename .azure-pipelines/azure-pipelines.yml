@@ -6,54 +6,77 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
+variables:
+  AKS_RESOURCE_GROUP: 'your-resource-group-name' 
+  AKS_CLUSTER: 'your-aks-cluster-name'            
+
 jobs:
-- job: CI_CD
+
+# 1. Fetch secrets
+- job: FetchSecrets
   steps:
-    # 1. Fetch secrets
     - task: AzureKeyVault@2
       inputs:
         azureSubscription: 'azure-sc-dev'
         KeyVaultName: 'malindaKeyVault01'
-        SecretsFilter: 'AKS-RESOURCE-GROUP,AKS-CLUSTER'
+        SecretsFilter: '*'
+        RunAsPreJob: true
 
-    # 2. Build React app
+# 2. Build React app
+- job: BuildApp
+  dependsOn: FetchSecrets
+  steps:
     - task: NodeTool@0
       inputs:
         versionSpec: '20.x'
       displayName: 'Install Node.js'
-
     - script: |
         npm ci
         npm run build
       displayName: 'Build React Vite app'
 
-    # 3. Build & push Docker image
+# 3. Build & push Docker image
+- job: BuildImage
+  dependsOn: BuildApp
+  steps:
     - task: Docker@2
       inputs:
         containerRegistry: 'azure-acr-sc'
         repository: 'portfolio'
         command: 'buildAndPush'
-        Dockerfile: 'Dockerfile'
+        Dockerfile: 'Dockerfile'   # or portfolio/Dockerfile if in subfolder
         tags: |
           $(Build.BuildId)
 
-    # 4. Deploy to AKS
+# 4. Deploy to AKS
+- job: Deploy
+  dependsOn: BuildImage
+  steps:
+    - task: KubectlInstaller@0
+      inputs:
+        kubectlVersion: 'latest'
+      displayName: 'Install kubectl'
+
     - task: AzureCLI@2
       inputs:
         azureSubscription: 'azure-sc-dev'
         scriptType: 'bash'
         scriptLocation: 'inlineScript'
         inlineScript: |
-          echo "RG=$AKS_RESOURCE_GROUP, Cluster=$AKS_CLUSTER"
+          set -e
+          echo "Using RG=$(AKS_RESOURCE_GROUP), Cluster=$(AKS_CLUSTER)"
 
           az aks get-credentials \
-            --resource-group $AKS_RESOURCE_GROUP \
-            --name $AKS_CLUSTER \
+            --resource-group $(AKS_RESOURCE_GROUP) \
+            --name $(AKS_CLUSTER) \
             --overwrite-existing
 
           kubectl apply -f k8s/deployment.yaml
           kubectl apply -f k8s/service.yaml
-          kubectl rollout status deployment/portfolio
 
-          echo "Public IP:"
+          echo "Waiting for rollout..."
+          kubectl rollout status deployment/portfolio --timeout=180s
+
+          echo "External IP:"
           kubectl get service portfolio-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
+      displayName: 'Deploy to AKS'
