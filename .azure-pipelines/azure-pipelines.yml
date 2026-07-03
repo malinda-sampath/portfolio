@@ -33,7 +33,7 @@ steps:
     containerRegistry: 'azure-acr-sc'   # <-- ACR service connection name
     repository: 'portfolio'
     command: 'buildAndPush'
-    Dockerfile: '**/Dockerfile'
+    Dockerfile: 'Dockerfile'
     tags: |
       $(Build.BuildId)
 
