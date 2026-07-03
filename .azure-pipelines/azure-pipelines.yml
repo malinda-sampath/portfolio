@@ -65,18 +65,20 @@ jobs:
         inlineScript: |
           set -e
           echo "Using RG=$(AKS_RESOURCE_GROUP), Cluster=$(AKS_CLUSTER)"
-
           az aks get-credentials \
             --resource-group $(AKS_RESOURCE_GROUP) \
             --name $(AKS_CLUSTER) \
             --overwrite-existing
-
-          kubectl apply -f k8s/deployment.yaml
+        
+          # Substitute variables into manifest before applying
+          export ACR_NAME=$(ACR-NAME)
+          export BUILD_ID=$(Build.BuildId)
+          envsubst < k8s/deployment.yaml | kubectl apply -f -
           kubectl apply -f k8s/service.yaml
-
+        
           echo "Waiting for rollout..."
           kubectl rollout status deployment/portfolio --timeout=180s
-
           echo "External IP:"
           kubectl get service portfolio-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
+
       displayName: 'Deploy to AKS'
