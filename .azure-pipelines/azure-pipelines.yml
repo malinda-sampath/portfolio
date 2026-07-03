@@ -7,13 +7,13 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  AKS_RESOURCE_GROUP: 'myResourceGroup' 
-  AKS_CLUSTER: 'mySingleNodeCluster'            
+  AKS_RESOURCE_GROUP: 'myResourceGroup'
+  AKS_CLUSTER: 'mySingleNodeCluster'
 
 jobs:
 
-# 1. Fetch secrets
-- job: FetchSecrets
+# 1. Build React app
+- job: BuildApp
   steps:
     - task: AzureKeyVault@2
       inputs:
@@ -21,11 +21,6 @@ jobs:
         KeyVaultName: 'malindaKeyVault01'
         SecretsFilter: '*'
         RunAsPreJob: true
-
-# 2. Build React app
-- job: BuildApp
-  dependsOn: FetchSecrets
-  steps:
     - task: NodeTool@0
       inputs:
         versionSpec: '20.x'
@@ -35,7 +30,7 @@ jobs:
         npm run build
       displayName: 'Build React Vite app'
 
-# 3. Build & push Docker image
+# 2. Build & push Docker image
 - job: BuildImage
   dependsOn: BuildApp
   steps:
@@ -44,14 +39,21 @@ jobs:
         containerRegistry: 'azure-acr-sc'
         repository: 'portfolio'
         command: 'buildAndPush'
-        Dockerfile: 'Dockerfile'   # or portfolio/Dockerfile if in subfolder
+        Dockerfile: 'Dockerfile'
         tags: |
           $(Build.BuildId)
 
-# 4. Deploy to AKS
+# 3. Deploy to AKS
 - job: Deploy
   dependsOn: BuildImage
   steps:
+    - task: AzureKeyVault@2
+      inputs:
+        azureSubscription: 'azure-sc-dev'
+        KeyVaultName: 'malindaKeyVault01'
+        SecretsFilter: 'ACR-NAME'   # only pull what this job actually needs
+        RunAsPreJob: true
+
     - task: KubectlInstaller@0
       inputs:
         kubectlVersion: 'latest'
@@ -63,22 +65,28 @@ jobs:
         scriptType: 'bash'
         scriptLocation: 'inlineScript'
         inlineScript: |
-          set -e
+          set -euo pipefail
           echo "Using RG=$(AKS_RESOURCE_GROUP), Cluster=$(AKS_CLUSTER)"
+
           az aks get-credentials \
             --resource-group $(AKS_RESOURCE_GROUP) \
             --name $(AKS_CLUSTER) \
             --overwrite-existing
-        
-          # Substitute variables into manifest before applying
-          export ACR_NAME=$(ACR-NAME)
-          export BUILD_ID=$(Build.BuildId)
+
+          export ACR_NAME="$(ACR-NAME)"
+          export BUILD_ID="$(Build.BuildId)"
+
+          if [ -z "$ACR_NAME" ]; then
+            echo "ERROR: ACR_NAME is empty — check Key Vault secret name/permissions"
+            exit 1
+          fi
+
           envsubst < k8s/deployment.yaml | kubectl apply -f -
           kubectl apply -f k8s/service.yaml
-        
+
           echo "Waiting for rollout..."
           kubectl rollout status deployment/portfolio --timeout=180s
+
           echo "External IP:"
           kubectl get service portfolio-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
-
       displayName: 'Deploy to AKS'
