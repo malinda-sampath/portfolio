@@ -15,7 +15,7 @@ jobs:
         azureSubscription: 'azure-sc-dev'
         KeyVaultName: 'malindaKeyVault01'
         SecretsFilter: '*'
-        RunAsPreJob: false
+        RunAsPreJob: true
 
 # 2. Build React app
 - job: BuildApp
