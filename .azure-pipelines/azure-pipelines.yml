@@ -54,11 +54,17 @@ jobs:
         scriptType: 'bash'
         scriptLocation: 'inlineScript'
         inlineScript: |
+          echo "Using RG=$AKS_RESOURCE_GROUP, Cluster=$AKS_CLUSTER"
+
           az aks get-credentials \
-            --resource-group $(AKS-RESOURCE-GROUP) \
-            --name $(AKS-CLUSTER) \
+            --resource-group $AKS_RESOURCE_GROUP \
+            --name $AKS_CLUSTER \
             --overwrite-existing
 
           kubectl apply -f k8s/deployment.yaml
           kubectl apply -f k8s/service.yaml
           kubectl rollout status deployment/portfolio
+
+          # Print external IP for quick access
+          kubectl get service portfolio-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
+
