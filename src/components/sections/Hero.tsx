@@ -73,9 +73,17 @@ const Hero = () => {
                 {/* Image Container */}
                 <div className="rounded-2xl overflow-hidden border border-white/10 shadow-lg transform hover:scale-105 transition duration-500">
                   <img
-                    src={`${import.meta.env.BASE_URL}images/portrait-crop.png`}
+                    src={`${import.meta.env.BASE_URL}images/portrait-hd.png`}
+                    srcSet={`
+                      ${import.meta.env.BASE_URL}images/portrait-mobile.png 400w,
+                      ${import.meta.env.BASE_URL}images/portrait-hd.png 800w,
+                      ${import.meta.env.BASE_URL}images/portrait-4k.png 1200w
+                    `}
+                    sizes="(max-width: 768px) 100vw, 50vw"
                     alt="Developer"
                     className="w-full h-full object-cover"
+                    fetchPriority="high"
+                    decoding="async"
                   />
                 </div>
 
