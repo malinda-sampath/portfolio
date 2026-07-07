@@ -17,7 +17,6 @@ type RadialGradientBackgroundProps = {
 };
 
 type Particle = {
-  id: number;
   x: number;
   y: number;
   size: number;
@@ -42,13 +41,29 @@ const RadialGradientBackground = ({
   const animFrameRef = useRef<number>(0);
   const particlesRef = useRef<Particle[]>([]);
   const [mouseGlow, setMouseGlow] = useState({ x: -999, y: -999 });
+  const [reducedMotion, setReducedMotion] = useState<boolean>(() =>
+    typeof window !== "undefined"
+      ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      : false,
+  );
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const handler = (e: MediaQueryListEvent) => setReducedMotion(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
 
   // --- Particle system ---
   useEffect(() => {
+    if (reducedMotion) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
+
+    let isVisible = true;
+    const isMobile = window.innerWidth < 768;
 
     const resize = () => {
       canvas.width = window.innerWidth;
@@ -57,10 +72,15 @@ const RadialGradientBackground = ({
     resize();
     window.addEventListener("resize", resize);
 
-    // Init particles
-    const count = 38;
-    particlesRef.current = Array.from({ length: count }, (_, i) => ({
-      id: i,
+    const handleVisibility = () => {
+      isVisible = document.visibilityState === "visible";
+      if (isVisible) draw();
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+
+    // Fewer particles on mobile — same ambient feel, lighter cost
+    const count = isMobile ? 18 : 38;
+    particlesRef.current = Array.from({ length: count }, () => ({
       x: Math.random() * window.innerWidth,
       y: Math.random() * window.innerHeight,
       size: Math.random() * 1.5 + 0.4,
@@ -72,10 +92,10 @@ const RadialGradientBackground = ({
     }));
 
     const draw = () => {
+      if (!isVisible) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       particlesRef.current.forEach((p) => {
-        // Subtle attraction toward mouse
         const dx = mouseRef.current.x - p.x;
         const dy = mouseRef.current.y - p.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
@@ -87,7 +107,6 @@ const RadialGradientBackground = ({
         p.x += p.speedX;
         p.y += p.speedY;
 
-        // Wrap around edges
         if (p.x < 0) p.x = canvas.width;
         if (p.x > canvas.width) p.x = 0;
         if (p.y < 0) p.y = canvas.height;
@@ -107,19 +126,27 @@ const RadialGradientBackground = ({
     return () => {
       cancelAnimationFrame(animFrameRef.current);
       window.removeEventListener("resize", resize);
+      document.removeEventListener("visibilitychange", handleVisibility);
     };
-  }, []);
+  }, [reducedMotion]);
 
   // --- Mouse tracking ---
   useEffect(() => {
-    if (variant !== "full-page") return;
+    if (variant !== "full-page" || reducedMotion) return;
+    let raf = 0;
     const handleMove = (e: MouseEvent) => {
       mouseRef.current = { x: e.clientX, y: e.clientY };
-      setMouseGlow({ x: e.clientX, y: e.clientY });
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() =>
+        setMouseGlow({ x: e.clientX, y: e.clientY }),
+      );
     };
     window.addEventListener("mousemove", handleMove);
-    return () => window.removeEventListener("mousemove", handleMove);
-  }, [variant]);
+    return () => {
+      window.removeEventListener("mousemove", handleMove);
+      cancelAnimationFrame(raf);
+    };
+  }, [variant, reducedMotion]);
 
   const variants: Record<
     Exclude<RadialGradientVariant, "custom">,
@@ -221,14 +248,14 @@ const RadialGradientBackground = ({
       style={{ zIndex: 0 }}
       aria-hidden="true"
     >
-      {/* Base gradient */}
       <div className="absolute inset-0 bg-[linear-gradient(160deg,rgba(6,12,10,0.95)_0%,rgba(7,20,14,0.9)_35%,rgba(8,10,16,0.96)_100%)]" />
 
-      {/* Blob layers */}
       {activeGradients.map((gradient, index) => (
         <div
           key={`${gradient.position}-${index}`}
-          className={`absolute ${gradient.position} ${gradient.size} rounded-full animate-pulse`}
+          className={`absolute ${gradient.position} ${gradient.size} rounded-full ${
+            reducedMotion ? "" : "animate-pulse"
+          }`}
           style={{
             background: `radial-gradient(circle at center, ${gradient.color} 0%, rgba(0,0,0,0) 68%)`,
             filter: `blur(${gradient.blur})`,
@@ -239,8 +266,7 @@ const RadialGradientBackground = ({
         />
       ))}
 
-      {/* Mouse glow — only on full-page */}
-      {variant === "full-page" && mouseGlow.x > 0 && (
+      {variant === "full-page" && !reducedMotion && mouseGlow.x > 0 && (
         <div
           className="absolute rounded-full pointer-events-none"
           style={{
@@ -256,17 +282,15 @@ const RadialGradientBackground = ({
         />
       )}
 
-      {/* Particle canvas */}
-      <canvas
-        ref={canvasRef}
-        className="absolute inset-0 w-full h-full"
-        style={{ opacity: 0.6 }}
-      />
+      {!reducedMotion && (
+        <canvas
+          ref={canvasRef}
+          className="absolute inset-0 w-full h-full"
+          style={{ opacity: 0.6 }}
+        />
+      )}
 
-      {/* Specular highlights */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_15%,rgba(255,255,255,0.12)_0%,rgba(255,255,255,0)_40%),radial-gradient(circle_at_85%_80%,rgba(255,255,255,0.1)_0%,rgba(255,255,255,0)_45%)]" />
-
-      {/* Dot grid */}
       <div className="absolute inset-0 opacity-[0.07] bg-[radial-gradient(rgba(255,255,255,0.55)_1px,transparent_1px)] bg-size-[18px_18px]" />
     </div>
   );

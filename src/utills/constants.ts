@@ -1,15 +1,16 @@
 export const PERSONAL_INFO = {
   name: "Malinda Sampath",
-  title: "Full Stack Developer & DevOps Enthusiast",
+  title:
+    "Software Engineer | Java Backend Engineer | Azure Cloud & DevOps Enthusiast",
   email: "malindasampath45@gmail.com",
   location: "Sri Lanka",
-  tagline: "Passionate about crafting efficient and scalable web applications.",
+  tagline: "Building Scalable Backend Systems & Cloud Solutions",
   resume: "/resume.pdf",
   bio: [
-    "I am a dedicated Full Stack Developer with a strong background in building dynamic and responsive web applications.",
-    "With expertise in both frontend and backend technologies, I thrive on creating seamless user experiences and robust server-side solutions.",
-    "My passion for coding and problem-solving drives me to continuously learn and stay updated with the latest industry trends.",
-    " I am committed to delivering high-quality code and collaborating effectively with teams to bring innovative projects to life.",
+    "Software Engineer specializing in Java backend development, cloud-native applications, and DevOps engineering with a focus on building scalable, secure, and maintainable software solutions.",
+    "Experienced in designing RESTful APIs, developing backend services, integrating modern frontend technologies, and deploying applications using cloud platforms and automation tools.",
+    "Passionate about engineering reliable systems, optimizing application performance, and improving software delivery through CI/CD pipelines, containerization, and DevOps practices.",
+    "Focused on Azure Cloud, software architecture, and modern engineering practices while continuously exploring new technologies to deliver efficient, high-quality solutions.",
   ],
 };
 
@@ -22,22 +23,22 @@ export const SOCIAL_LINKS = {
 };
 
 export const STATS = [
-  { label: "Years Experience", value: "1+ " },
-  { label: "Projects Completed", value: "5+ " },
-  { label: "Technologies Used", value: "10+ " },
-  { label: "Client Satisfaction", value: "95% " },
+  { label: "Years Experience", value: "1+" },
+  { label: "Projects Completed", value: "5+" },
+  { label: "Technologies Used", value: "10+" },
+  { label: "Certifications", value: "2+" },
 ];
 
 export const PERSONAL_STATS = [
-  { label: "Happy Clients", value: "5+" },
   { label: "Code Commits", value: "2.5k+" },
-  { label: "GitHub Stars", value: "100+" },
+  { label: "GitHub Repositories", value: "20+" },
+  { label: "Development Hours", value: "1000+" },
 ];
 
 export const ABOUT_STATS = [
-  { label: "Happy Clients", value: "5+" },
   { label: "Code Commits", value: "2.5k+" },
-  { label: "GitHub Stars", value: "100+" },
+  { label: "GitHub Repositories", value: "20+" },
+  { label: "Development Hours", value: "1000+" },
 ];
 
 export const NAV_LINKS = [
