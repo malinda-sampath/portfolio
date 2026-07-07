@@ -5,10 +5,11 @@ import RadialGradientBackground from "./components/backgrounds/RadialGradientBac
 
 const App = () => {
   return (
-    <div className="min-h-screen bg-black pb-[100vh]">
+    <div className="min-h-screen bg-black">
+      <RadialGradientBackground variant="full-page" />
+      <div className="noise-overlay" aria-hidden="true" />
       <NavBar />
       <main>
-        <RadialGradientBackground variant="full-page" />
         <Hero />
         <About />
       </main>

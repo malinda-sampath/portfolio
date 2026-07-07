@@ -1,63 +1,80 @@
-import { ChevronDown, Star } from "lucide-react";
-import { SiReact, SiNextdotjs, SiTailwindcss, SiMongodb } from "react-icons/si";
+import { ChevronDown, ArrowRight } from "lucide-react";
+import { FaJava } from "react-icons/fa";
+import { VscAzure } from "react-icons/vsc";
+import { SiSpringboot, SiDocker, SiKubernetes } from "react-icons/si";
 import { PERSONAL_INFO, STATS } from "../../utills/constants";
 import { scrollToSection } from "../../hooks/useScrollSpy";
 import FadeIn from "../animations/Fadein";
+import MagneticButton from "../ui/MagneticButton";
 
 const Hero = () => {
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden">
-      {/* Content Container */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 w-full">
         <div className="grid grid-cols-1 mt-8 sm:mt-8 lg:grid-cols-2 gap-12 items-center">
           {/* Left Column - Content */}
           <div className="text-left">
             <FadeIn delay={0}>
-              <div className="inline-flex items-center gap-2.5 px-4.5 py-2.75 mb-8 bg-linear-to-r from-primary/10 via-primary/15 to-primary/20 border  border-primary/20 rounded-full">
-                <Star className="w-4 h-4 text-white fill-white" />
-                <span className="text-xs md:text-sm text-white traccking-[1.2px]">
-                  {PERSONAL_INFO.title} | Based in {PERSONAL_INFO.location}
+              <div className="inline-flex items-center gap-2.5 px-4.5 py-2.75 mb-8 bg-linear-to-r from-primary/10 via-primary/15 to-primary/20 border border-primary/20 rounded-full">
+                <span className="relative flex h-5 w-5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+                </span>
+                <span className="text-xs md:text-sm text-white tracking-[1.2px]">
+                  {PERSONAL_INFO.title} · Available for work ·{" "}
+                  {PERSONAL_INFO.location}
                 </span>
               </div>
             </FadeIn>
 
             <FadeIn delay={100}>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-normal text-white md-6 leading-tight">
-                React.js Developer Portfolio
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-normal text-white mb-6 leading-tight">
+                Hi, I'm{" "}
+                <span className="bg-linear-to-r from-primary via-primary to-primary/60 bg-clip-text text-transparent">
+                  {PERSONAL_INFO.name}
+                </span>
               </h1>
             </FadeIn>
 
             <FadeIn delay={200}>
               <p className="text-lg text-white/70 max-w-137.5 mb-8">
-                Hi, I'm {PERSONAL_INFO.name}, a passionate React.js developer
-                with experience in building dynamic and responsive web
-                applications. I specialize in creating seamless user experiences
-                and writing clean, efficient code.
+                A Software Engineer passionate about designing and building
+                scalable backend systems, cloud-native applications, and modern
+                web solutions. I specialize in Java development, Azure Cloud,
+                DevOps practices, and creating reliable software through clean
+                architecture and efficient engineering practices.
               </p>
             </FadeIn>
 
             <FadeIn delay={300}>
-              <button
-                onClick={() => scrollToSection("contact")}
-                className="inline-flex items-center gap-0 mb-12 group"
-              >
-                <div className="relative z-10 bg-primary hover:bg-primary/80 text-[ #212121] rounded-[17px] px-[26px] py-[13px] text-base font-medium border border-primary">
+              <div className="flex flex-wrap items-center gap-4 mb-12">
+                <MagneticButton
+                  onClick={() => scrollToSection("contact")}
+                  className="group relative inline-flex items-center gap-2 bg-primary-dark hover:bg-primary/90 text-[#212121] rounded-[17px] px-[26px] py-[13px] text-base font-medium border border-primary transition-transform duration-300 hover:scale-[1.03] active:scale-[0.98]"
+                >
                   Get In Touch
-                </div>
-              </button>
+                  <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+                </MagneticButton>
+
+                <button
+                  onClick={() => scrollToSection("projects")}
+                  className="inline-flex items-center gap-2 px-[26px] py-[13px] text-base font-medium text-white rounded-[17px] border border-white/20 hover:border-white/40 hover:bg-white/5 transition-all duration-300"
+                >
+                  View Work
+                </button>
+              </div>
             </FadeIn>
 
             <FadeIn delay={400}>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-10 max-x-full">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-10 max-w-full">
                 {STATS.map((stat, index) => (
                   <div
                     key={index}
-                    className="text-left border-r border-white/50 pr-10 last:border-r-0"
+                    className="text-left border-r border-white/10 pr-10 last:border-r-0"
                   >
-                    <span className="text-2xl font-normal text-primary mb-2 font-mono">
+                    <span className="block text-2xl font-normal text-primary mb-2 font-mono">
                       {stat.value}
                     </span>
-                    <p className="text-sm text-white leading-snug">
+                    <p className="text-sm text-white/70 leading-snug">
                       {stat.label}
                     </p>
                   </div>
@@ -70,8 +87,7 @@ const Hero = () => {
           <FadeIn delay={200}>
             <div className="relative">
               <div className="relative overflow-hidden rounded-2xl aspect-[4/5] max-w-sm mx-auto lg:max-w-[31rem] lg:ml-auto group">
-                {/* Image Container */}
-                <div className="rounded-2xl overflow-hidden border border-white/10 shadow-lg transform hover:scale-105 transition duration-500">
+                <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-lg transform transition-transform duration-500 group-hover:scale-[1.02]">
                   <img
                     src={`${import.meta.env.BASE_URL}images/portrait-hd.png`}
                     srcSet={`
@@ -80,32 +96,33 @@ const Hero = () => {
                       ${import.meta.env.BASE_URL}images/portrait-4k.png 1200w
                     `}
                     sizes="(max-width: 768px) 100vw, 50vw"
-                    alt="Developer"
+                    alt={`${PERSONAL_INFO.name}, ${PERSONAL_INFO.title}`}
                     className="w-full h-full object-cover"
                     fetchPriority="high"
                     decoding="async"
                   />
+                  {/* Bottom gradient for logo legibility */}
+                  <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/70 to-transparent" />
                 </div>
 
                 {/* Technology Logos */}
-                <div className="absolute bottom-6 left-6 z-20">
+                <div className="absolute bottom-6 left-6 right-6 z-20">
                   <FadeIn delay={500}>
-                    <div className="flex items-center gap-4 bg-black/40 backdrop-blur-sm border border-white/10 rounded-full px-6 py-3">
-                      <div className="w-6 h-6 items-center justify-center hover:scale-110 transition-transform duration-300">
-                        <SiReact className="w-full h-full text-primary" />
-                      </div>
-
-                      <div className="w-6 h-6 items-center justify-center hover:scale-110 transition-transform duration-300">
-                        <SiNextdotjs className="w-full h-full text-primary" />
-                      </div>
-
-                      <div className="w-6 h-6 items-center justify-center hover:scale-110 transition-transform duration-300">
-                        <SiTailwindcss className="w-full h-full text-primary" />
-                      </div>
-
-                      <div className="w-6 h-6 items-center justify-center hover:scale-110 transition-transform duration-300">
-                        <SiMongodb className="w-full h-full text-primary" />
-                      </div>
+                    <div className="flex items-center justify-between gap-3 bg-black/40 backdrop-blur-sm border border-white/10 rounded-full px-6 py-3">
+                      {[
+                        FaJava,
+                        SiSpringboot,
+                        SiDocker,
+                        SiKubernetes,
+                        VscAzure,
+                      ].map((Icon, i) => (
+                        <div
+                          key={i}
+                          className="w-6 h-6 hover:scale-125 hover:-translate-y-0.5 transition-transform duration-300"
+                        >
+                          <Icon className="w-full h-full text-primary" />
+                        </div>
+                      ))}
                     </div>
                   </FadeIn>
                 </div>
@@ -114,12 +131,14 @@ const Hero = () => {
           </FadeIn>
         </div>
       </div>
-      {/* Scroll Indicator */}
+
       <button
         onClick={() => scrollToSection("about")}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce"
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-white/50 hover:text-primary transition-colors duration-300 motion-safe:animate-bounce"
+        aria-label="Scroll to about section"
       >
-        <ChevronDown className="w-8 h-8 text-primary" />
+        <span className="text-[11px] tracking-[2px] uppercase">Scroll</span>
+        <ChevronDown className="w-6 h-6" />
       </button>
     </section>
   );
