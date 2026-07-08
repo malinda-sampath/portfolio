@@ -5,21 +5,24 @@ import RadialGradientBackground from "./components/backgrounds/RadialGradientBac
 import Skills from "./components/sections/Skills";
 import Footer from "./components/layout/Footer";
 import WhatsAppButton from "./components/ui/WhatsAppButton";
+import { WhatsAppChatProvider } from "./context/WhatsAppChatContext";
 
 const App = () => {
   return (
-    <div className="min-h-screen bg-black">
-      <RadialGradientBackground variant="full-page" />
-      <div className="noise-overlay" aria-hidden="true" />
-      <NavBar />
-      <main>
-        <Hero />
-        <About />
-        <Skills />
-      </main>
-      <Footer />
-      <WhatsAppButton />
-    </div>
+    <WhatsAppChatProvider>
+      <div className="min-h-screen bg-black">
+        <RadialGradientBackground variant="full-page" />
+        <div className="noise-overlay" aria-hidden="true" />
+        <NavBar />
+        <main>
+          <Hero />
+          <About />
+          <Skills />
+        </main>
+        <Footer />
+        <WhatsAppButton />
+      </div>
+    </WhatsAppChatProvider>
   );
 };
 

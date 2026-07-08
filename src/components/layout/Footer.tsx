@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { FaGithub } from "react-icons/fa";
 import { FaLinkedin } from "react-icons/fa6";
-import { Mail, MapPin, Phone } from "lucide-react";
+import { Mail, MapPin, Phone, Bot } from "lucide-react";
 import { PERSONAL_INFO, NAV_LINKS } from "../../utills/constants";
 import { scrollToSection } from "../../hooks/useScrollSpy";
 import MagneticButton from "../ui/MagneticButton";
 import FadeIn from "../animations/Fadein";
 import { SYSTEM_INFO } from "../../utills/system";
+import { useWhatsAppChat } from "../../context/WhatsAppChatContext";
+import ChatPanel from "../ui/ChatPanel";
 
 const BUILD_VERSION = SYSTEM_INFO.buildVersion;
 const DEPLOY_DATE = SYSTEM_INFO.deployDate;
@@ -40,7 +42,7 @@ const SOCIALS = [
   {
     id: "mobile",
     label: "Mobile",
-    icon: Phone, // fixed: was MapPin
+    icon: Phone,
     href: `tel:${CONTACT.mobile}`,
   },
 ];
@@ -50,6 +52,7 @@ const SAME_TAB_IDS = ["email", "mobile"];
 
 const Footer = () => {
   const [uptime, setUptime] = useState("00:00:00");
+  const { isChatOpen, setIsChatOpen } = useWhatsAppChat();
 
   useEffect(() => {
     const start = Date.now();
@@ -90,17 +93,30 @@ const Footer = () => {
               Let's build something worth shipping.
             </h2>
             <p className="relative text-white/60 max-w-md mx-auto mb-8">
-              {
-                "Open to backend engineering, cloud-native development, and opportunities to build scalable software systems."
-              }
+              Open to backend engineering, cloud-native development, and
+              opportunities to build scalable software systems.
             </p>
-            <MagneticButton
-              onClick={() => (window.location.href = `mailto:${CONTACT.email}`)}
-              strength={0.3}
-              className="relative inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-[#212121] rounded-[17px] px-8 py-4 text-base font-medium border border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-black"
-            >
-              Say Hello
-            </MagneticButton>
+
+            {!isChatOpen && (
+              <MagneticButton
+                onClick={() => setIsChatOpen(true)}
+                strength={0.3}
+                className="relative inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-[#212121] rounded-[17px] px-8 py-4 text-base font-medium border border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+              >
+                <span className="relative inline-flex">
+                  <Bot className="w-5 h-5 animate-bounce" />
+                  <span className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-green-500 border border-[#212121] animate-pulse" />
+                </span>
+                Say Hello
+              </MagneticButton>
+            )}
+
+            {/* Inline chat panel — replaces the button once opened */}
+            {isChatOpen && (
+              <div className="relative mx-auto max-w-[640px] text-left">
+                <ChatPanel variant="inline" />
+              </div>
+            )}
           </div>
         </FadeIn>
 
