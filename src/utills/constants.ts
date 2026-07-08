@@ -3,6 +3,9 @@ export const PERSONAL_INFO = {
   title:
     "Software Engineer | Java Backend Engineer | Azure Cloud & DevOps Enthusiast",
   email: "malindasampath45@gmail.com",
+  mobile: "+94 70 189 4658",
+  github: "https://github.com/malinda-sampath",
+  linkedin: "https://linkedin.com/in/malinda-sampath",
   location: "Sri Lanka",
   tagline: "Building Scalable Backend Systems & Cloud Solutions",
   resume: "cv/Malinda_Sampath-CV.pdf",
