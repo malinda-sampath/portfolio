@@ -58,7 +58,7 @@ const NavBar = () => {
             <Code className="w-6 h-6 text-primary shrink-0" />
             <button
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-              className="text-2xl font-bold bg-linear-to-r from-primary via-primary/60 to-primary/30 bg-clip-text text-transparent hover:opacity-80 transition-opacity focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary/60 focus-visible:outline-offset-4 rounded-sm"
+              className="text-2xl font-bold bg-linear-to-r from-primary via-primary/60 to-primary/30 bg-clip-text text-transparent hover:opacity-80 transition-opacity focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary/60 focus-visible:outline-offset-4 rounded-[17px] px-2 py-1"
               aria-label="Scroll to top"
             >
               {PERSONAL_INFO.name}
@@ -66,12 +66,12 @@ const NavBar = () => {
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-1 relative bg-white/5 border border-white/10 rounded-full px-1.5 py-1.5">
+          <nav className="hidden md:flex items-center gap-1 relative bg-white/5 border border-white/10 rounded-[17px] px-1.5 py-1.5">
             {NAV_LINKS.map((link) => (
               <button
                 key={link.id}
                 onClick={() => handleNavClick(link.id)}
-                className={`relative z-10 px-4 py-2 text-sm font-medium rounded-full transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary/60 ${
+                className={`relative z-10 px-4 py-2 text-sm font-medium rounded-[17px] transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary/60 ${
                   activeSection === link.id
                     ? "text-black"
                     : "text-white/70 hover:text-white"
@@ -79,7 +79,7 @@ const NavBar = () => {
               >
                 {activeSection === link.id && (
                   <span
-                    className="absolute inset-0 -z-10 bg-primary rounded-full transition-all duration-300"
+                    className="absolute inset-0 -z-10 bg-primary rounded-[17px] transition-all duration-300"
                     aria-hidden="true"
                   />
                 )}
@@ -153,7 +153,7 @@ const NavBar = () => {
           ))}
           <button
             onClick={() => handleNavClick("contact")}
-            className="w-full px-7 py-3 mt-2 bg-primary text-[#212121] font-bold text-base rounded-lg border border-primary hover:bg-primary/90 transition-all duration-300"
+            className="w-full px-7 py-3 mt-2 bg-primary text-[#212121] font-bold text-base rounded-[17px] border border-primary hover:bg-primary/90 transition-all duration-300"
           >
             Hire Me
           </button>

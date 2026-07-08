@@ -5,12 +5,12 @@ export const PERSONAL_INFO = {
   email: "malindasampath45@gmail.com",
   location: "Sri Lanka",
   tagline: "Building Scalable Backend Systems & Cloud Solutions",
-  resume: "/resume.pdf",
+  resume: "cv/Malinda_Sampath-CV.pdf",
   bio: [
-    "Software Engineer specializing in Java backend development, cloud-native applications, and DevOps engineering with a focus on building scalable, secure, and maintainable software solutions.",
-    "Experienced in designing RESTful APIs, developing backend services, integrating modern frontend technologies, and deploying applications using cloud platforms and automation tools.",
-    "Passionate about engineering reliable systems, optimizing application performance, and improving software delivery through CI/CD pipelines, containerization, and DevOps practices.",
-    "Focused on Azure Cloud, software architecture, and modern engineering practices while continuously exploring new technologies to deliver efficient, high-quality solutions.",
+    "Software Engineer with experience developing enterprise backend applications using Java, Spring Boot, REST APIs, and microservice architecture.",
+    "Experienced in integrating authentication systems, API management platforms, databases, and cloud services to build secure and scalable applications.",
+    "Skilled in containerization, Kubernetes, Azure Cloud, and CI/CD automation to streamline deployments and improve software delivery.",
+    "Continuously learning modern technologies and engineering best practices to build maintainable, high-quality software that solves real-world problems.",
   ],
 };
 
@@ -25,7 +25,7 @@ export const SOCIAL_LINKS = {
 export const STATS = [
   { label: "Years Experience", value: "1+" },
   { label: "Projects Completed", value: "5+" },
-  { label: "Technologies Used", value: "10+" },
+  { label: "Technologies", value: "10+" },
   { label: "Certifications", value: "2+" },
 ];
 
