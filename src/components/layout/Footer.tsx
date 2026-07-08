@@ -11,6 +11,13 @@ import { SYSTEM_INFO } from "../../utills/system";
 const BUILD_VERSION = SYSTEM_INFO.buildVersion;
 const DEPLOY_DATE = SYSTEM_INFO.deployDate;
 
+// Single source of truth for fallback contact info
+const CONTACT = {
+  email: PERSONAL_INFO.email ?? "hello@example.com",
+  mobile: PERSONAL_INFO.mobile ?? "+94 77 123 4567",
+  location: PERSONAL_INFO.location ?? "Remote",
+};
+
 const SOCIALS = [
   {
     id: "github",
@@ -28,15 +35,18 @@ const SOCIALS = [
     id: "email",
     label: "Email",
     icon: Mail,
-    href: `mailto:${PERSONAL_INFO.email}`,
+    href: `mailto:${CONTACT.email}`,
   },
   {
     id: "mobile",
     label: "Mobile",
-    icon: MapPin,
-    href: `tel:${PERSONAL_INFO.mobile}`,
+    icon: Phone, // fixed: was MapPin
+    href: `tel:${CONTACT.mobile}`,
   },
 ];
+
+// ids that should never open in a new tab
+const SAME_TAB_IDS = ["email", "mobile"];
 
 const Footer = () => {
   const [uptime, setUptime] = useState("00:00:00");
@@ -80,15 +90,14 @@ const Footer = () => {
               Let's build something worth shipping.
             </h2>
             <p className="relative text-white/60 max-w-md mx-auto mb-8">
-              Open to backend engineering, cloud-native development, and
-              opportunities to build scalable software systems.
+              {
+                "Open to backend engineering, cloud-native development, and opportunities to build scalable software systems."
+              }
             </p>
             <MagneticButton
-              onClick={() =>
-                (window.location.href = `mailto:${PERSONAL_INFO.email ?? "hello@example.com"}`)
-              }
+              onClick={() => (window.location.href = `mailto:${CONTACT.email}`)}
               strength={0.3}
-              className="relative inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-[#212121] rounded-[17px] px-8 py-4 text-base font-medium border border-primary"
+              className="relative inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-[#212121] rounded-[17px] px-8 py-4 text-base font-medium border border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-black"
             >
               Say Hello
             </MagneticButton>
@@ -107,18 +116,21 @@ const Footer = () => {
                 {PERSONAL_INFO.title} building reliable, cloud-native software.
               </p>
               <div className="flex items-center gap-3">
-                {SOCIALS.map((social) => (
-                  <a
-                    key={social.id}
-                    href={social.href}
-                    target={social.id !== "email" ? "_blank" : undefined}
-                    rel="noopener noreferrer"
-                    aria-label={social.label}
-                    className="scan-hover w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/10 text-white/60 hover:text-primary hover:border-primary/40 transition-colors duration-300"
-                  >
-                    <social.icon className="w-4 h-4" />
-                  </a>
-                ))}
+                {SOCIALS.map((social) => {
+                  const isSameTab = SAME_TAB_IDS.includes(social.id);
+                  return (
+                    <a
+                      key={social.id}
+                      href={social.href}
+                      target={isSameTab ? undefined : "_blank"}
+                      rel={isSameTab ? undefined : "noopener noreferrer"}
+                      aria-label={social.label}
+                      className="scan-hover w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/10 text-white/60 hover:text-primary hover:border-primary/40 transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                    >
+                      <social.icon className="w-4 h-4" />
+                    </a>
+                  );
+                })}
               </div>
             </div>
           </FadeIn>
@@ -134,7 +146,7 @@ const Footer = () => {
                   <li key={link.id}>
                     <button
                       onClick={() => scrollToSection(link.id)}
-                      className="text-sm text-white/60 hover:text-primary transition-colors duration-200"
+                      className="text-sm text-white/60 hover:text-primary transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
                     >
                       {link.label}
                     </button>
@@ -154,25 +166,25 @@ const Footer = () => {
                 <li className="flex items-center gap-2">
                   <Phone className="w-4 h-4 text-primary shrink-0" />
                   <a
-                    href={`tel:${PERSONAL_INFO.mobile ?? "+94 77 123 4567"}`}
-                    className="hover:text-primary transition-colors duration-200"
+                    href={`tel:${CONTACT.mobile}`}
+                    className="hover:text-primary transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
                   >
-                    {PERSONAL_INFO.mobile ?? "+94 77 123 4567"}
+                    {CONTACT.mobile}
                   </a>
                 </li>
 
                 <li className="flex items-center gap-2">
                   <Mail className="w-4 h-4 text-primary shrink-0" />
                   <a
-                    href={`mailto:${PERSONAL_INFO.email ?? "hello@example.com"}`}
-                    className="hover:text-primary transition-colors duration-200"
+                    href={`mailto:${CONTACT.email}`}
+                    className="hover:text-primary transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
                   >
-                    {PERSONAL_INFO.email ?? "hello@example.com"}
+                    {CONTACT.email}
                   </a>
                 </li>
                 <li className="flex items-center gap-2">
                   <MapPin className="w-4 h-4 text-primary shrink-0" />
-                  {PERSONAL_INFO.location}
+                  {CONTACT.location}
                 </li>
               </ul>
             </div>
