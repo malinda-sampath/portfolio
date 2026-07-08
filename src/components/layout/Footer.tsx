@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { FaGithub } from "react-icons/fa";
 import { FaLinkedin } from "react-icons/fa6";
-import { Mail, MapPin, ArrowUp, Phone } from "lucide-react";
+import { Mail, MapPin, Phone } from "lucide-react";
 import { PERSONAL_INFO, NAV_LINKS } from "../../utills/constants";
 import { scrollToSection } from "../../hooks/useScrollSpy";
 import MagneticButton from "../ui/MagneticButton";
-import useMagnetic from "../../hooks/userMagnetic";
 import FadeIn from "../animations/Fadein";
 import { SYSTEM_INFO } from "../../utills/system";
 
@@ -41,7 +40,6 @@ const SOCIALS = [
 
 const Footer = () => {
   const [uptime, setUptime] = useState("00:00:00");
-  const scrollTopRef = useMagnetic({ strength: 0.35, radius: 60 });
 
   useEffect(() => {
     const start = Date.now();
@@ -205,15 +203,6 @@ const Footer = () => {
             © {new Date().getFullYear()} {PERSONAL_INFO.name}. All rights
             reserved.
           </p>
-
-          <button
-            ref={scrollTopRef as React.RefObject<HTMLButtonElement>}
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            aria-label="Back to top"
-            className="scan-hover w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/10 text-white/60 hover:text-primary hover:border-primary/40 transition-all duration-300 will-change-transform"
-          >
-            <ArrowUp className="w-4 h-4" />
-          </button>
         </div>
       </div>
     </footer>

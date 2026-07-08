@@ -4,6 +4,7 @@ export const PERSONAL_INFO = {
     "Software Engineer | Java Backend Engineer | Azure Cloud & DevOps Enthusiast",
   email: "malindasampath45@gmail.com",
   mobile: "+94 70 189 4658",
+  whatsapp: "94701894658",
   github: "https://github.com/malinda-sampath",
   linkedin: "https://linkedin.com/in/malinda-sampath",
   location: "Sri Lanka",
@@ -15,14 +16,6 @@ export const PERSONAL_INFO = {
     "Skilled in containerization, Kubernetes, Azure Cloud, and CI/CD automation to streamline deployments and improve software delivery.",
     "Continuously learning modern technologies and engineering best practices to build maintainable, high-quality software that solves real-world problems.",
   ],
-};
-
-export const SOCIAL_LINKS = {
-  github: "",
-  linkedin: "",
-  twitter: "",
-  facebook: "",
-  instagram: "",
 };
 
 export const STATS = [

@@ -15,6 +15,8 @@ const useMagnetic = ({
     const el = ref.current;
     if (!el) return;
 
+    el.style.transition = "transform 0.2s ease-out";
+
     const prefersReduced = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
