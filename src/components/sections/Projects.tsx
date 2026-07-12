@@ -1,10 +1,12 @@
 import { useMemo, useState } from "react";
+import { projects, categories, type Project } from "../../data/projects";
 import FadeIn from "../animations/Fadein";
-import { projects, categories } from "../../data/projects";
-import ProjectCard from "../ui/ProjectCard";
+import ProjectTile from "../ui/ProjectTile";
+import ProjectModal from "../ui/ProjectModel";
 
 const Projects = () => {
   const [activeCategory, setActiveCategory] = useState<string>("All");
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   const filtered = useMemo(() => {
     if (activeCategory === "All") return projects;
@@ -34,8 +36,8 @@ const Projects = () => {
 
         <FadeIn delay={120}>
           <p className="text-base text-white/60 max-w-xl mx-auto text-center mb-12">
-            A showcase of backend systems, cloud-native applications, and modern
-            software solutions I've built end to end.
+            Click any project to see the full breakdown — screenshots, demo, and
+            stack.
           </p>
         </FadeIn>
 
@@ -68,13 +70,11 @@ const Projects = () => {
           </div>
         </FadeIn>
 
-        {/* Project Grid — bento: featured projects span 2 cols */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+        {/* Compact tile grid */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {filtered.map((project, index) => (
-            <FadeIn key={project.id} delay={index * 90}>
-              <div className={project.featured ? "md:col-span-2" : ""}>
-                <ProjectCard project={project} featured={!!project.featured} />
-              </div>
+            <FadeIn key={project.id} delay={index * 70}>
+              <ProjectTile project={project} onOpen={setSelectedProject} />
             </FadeIn>
           ))}
         </div>
@@ -85,6 +85,12 @@ const Projects = () => {
           </p>
         )}
       </div>
+
+      <ProjectModal
+        key={selectedProject?.id ?? "closed"}
+        project={selectedProject}
+        onClose={() => setSelectedProject(null)}
+      />
     </section>
   );
 };
