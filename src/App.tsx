@@ -6,6 +6,7 @@ import Skills from "./components/sections/Skills";
 import Footer from "./components/layout/Footer";
 import WhatsAppButton from "./components/ui/WhatsAppButton";
 import { WhatsAppChatProvider } from "./context/WhatsAppChatContext";
+import Projects from "./components/sections/Projects";
 
 const App = () => {
   return (
@@ -18,6 +19,7 @@ const App = () => {
           <Hero />
           <About />
           <Skills />
+          <Projects />
         </main>
         <Footer />
         <WhatsAppButton />
