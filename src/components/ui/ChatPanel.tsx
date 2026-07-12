@@ -162,12 +162,12 @@ const ChatPanel = ({
       </div>
 
       {/* Quick Messages */}
-      <div className="bg-[#ECE5DD] px-4 pb-3 flex flex-col gap-2">
+      <div className="hidden md:flex flex-col gap-2 bg-[#ECE5DD] px-4 pb-3">
         {QUICK_MESSAGES.map((item, index) => (
           <button
             key={index}
             onClick={() => handleQuickMessage(item)}
-            className="rounded-lg bg-white px-3 py-2 text-left text-xs text-gray-700 shadow hover:bg-gray-100 transition"
+            className="rounded-lg bg-white px-3 py-2 text-left text-xs text-gray-700 shadow transition hover:bg-gray-100"
           >
             {item}
           </button>
