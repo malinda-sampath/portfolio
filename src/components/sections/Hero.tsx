@@ -88,6 +88,8 @@ const Hero = () => {
               <div className="relative overflow-hidden rounded-[17px] aspect-[4/5] max-w-sm mx-auto lg:max-w-[31rem] lg:ml-auto group">
                 <div className="relative rounded-[17px] overflow-hidden border border-white/10 shadow-lg transform transition-transform duration-500 group-hover:scale-[1.02]">
                   <img
+                    width="800"
+                    height="800"
                     src={`${import.meta.env.BASE_URL}images/portrait-hd.png`}
                     srcSet={`
                       ${import.meta.env.BASE_URL}images/portrait-mobile.png 400w,
