@@ -9,7 +9,7 @@ export const PERSONAL_INFO = {
   linkedin: "https://linkedin.com/in/malinda-sampath",
   location: "Sri Lanka",
   tagline: "Building Scalable Backend Systems & Cloud Solutions",
-  resume: "cv/Malinda_Sampath-CV.pdf",
+  resume: "cv/Malinda Sampath Software Engineer.pdf",
   bio: [
     "Software Engineer with experience developing enterprise backend applications using Java, Spring Boot, REST APIs, and microservice architecture.",
     "Experienced in integrating authentication systems, API management platforms, databases, and cloud services to build secure and scalable applications.",
