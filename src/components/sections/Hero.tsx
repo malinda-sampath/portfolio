@@ -29,7 +29,7 @@ const Hero = () => {
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-normal text-white mb-6 leading-tight">
                 Hi, I'm{" "}
                 <span className="bg-linear-to-r from-primary via-primary to-primary/60 bg-clip-text text-transparent">
-                  {PERSONAL_INFO.name}
+                  {PERSONAL_INFO.name} Piyadarshana
                 </span>
               </h1>
             </FadeIn>
