@@ -2,6 +2,7 @@ import portfolioHero from "../../public/assets/projects/portfolio/Hero_section.p
 import connect from "../../public/assets/projects/portfolio/Connect.png";
 import skills from "../../public/assets/projects/portfolio/Skills.png";
 import azure from "../../public/assets/projects/portfolio/Azure.png";
+import apirraHero from "../../public/assets/projects/apirra/Hero_section.png";
 
 export type Project = {
   id: number;
@@ -39,6 +40,28 @@ export const projects: Project[] = [
     ],
     githubUrl: "https://github.com/malinda-sampath/portfolio",
     liveUrl: "https://www.malindasampath.com/",
+    featured: true,
+    role: "Solo project",
+    year: "2026",
+  },
+  {
+    id: 2,
+    title: "Apirra — API Explorer",
+    description:
+      "A browser-based, fully client-side OpenAPI/Swagger explorer, similar in spirit to Postman or Swagger UI. Paste any spec URL and it parses every endpoint into a searchable sidebar, auto-generates example request bodies from the schema, and lets you 'Try it out' — sending real requests and inspecting live responses, copying a ready-to-run cURL command, or replaying past requests from a local history. No backend or signup required; every request goes straight from the browser to the target API.",
+    image: apirraHero,
+    gallery: [],
+    category: "Developer Tools",
+    tech: [
+      "React",
+      "TypeScript",
+      "Vite",
+      "Tailwind CSS",
+      "React Router",
+      "Axios",
+    ],
+    githubUrl: "https://github.com/malinda-sampath/apirra-saas-frontned",
+    liveUrl: "https://apirra.malindasampath.com/",
     featured: true,
     role: "Solo project",
     year: "2026",
