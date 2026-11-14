@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react";
 import { FaGithub } from "react-icons/fa";
 import { FaLinkedin } from "react-icons/fa6";
-import { Mail, MapPin, Phone, Bot } from "lucide-react";
+import { Mail, MapPin } from "lucide-react";
 import { PERSONAL_INFO, NAV_LINKS } from "../../utills/constants";
 import { scrollToSection } from "../../hooks/useScrollSpy";
-import MagneticButton from "../ui/MagneticButton";
+import useMagnetic from "../../hooks/userMagnetic";
 import FadeIn from "../animations/Fadein";
 import { SYSTEM_INFO } from "../../utills/system";
-import { useWhatsAppChat } from "../../context/WhatsAppChatContext";
-import ChatPanel from "../ui/ChatPanel";
 
 const BUILD_VERSION = SYSTEM_INFO.buildVersion;
 const DEPLOY_DATE = SYSTEM_INFO.deployDate;
@@ -16,7 +14,6 @@ const DEPLOY_DATE = SYSTEM_INFO.deployDate;
 // Single source of truth for fallback contact info
 const CONTACT = {
   email: PERSONAL_INFO.email ?? "hello@example.com",
-  mobile: PERSONAL_INFO.mobile ?? "+94 77 123 4567",
   location: PERSONAL_INFO.location ?? "Remote",
 };
 
@@ -39,20 +36,14 @@ const SOCIALS = [
     icon: Mail,
     href: `mailto:${CONTACT.email}`,
   },
-  {
-    id: "mobile",
-    label: "Mobile",
-    icon: Phone,
-    href: `tel:${CONTACT.mobile}`,
-  },
 ];
 
 // ids that should never open in a new tab
-const SAME_TAB_IDS = ["email", "mobile"];
+const SAME_TAB_IDS = ["email"];
 
 const Footer = () => {
   const [uptime, setUptime] = useState("00:00:00");
-  const { isChatOpen, setIsChatOpen } = useWhatsAppChat();
+  const helloRef = useMagnetic({ strength: 0.3, radius: 90 });
 
   useEffect(() => {
     const start = Date.now();
@@ -97,26 +88,14 @@ const Footer = () => {
               opportunities to build scalable software systems.
             </p>
 
-            {!isChatOpen && (
-              <MagneticButton
-                onClick={() => setIsChatOpen(true)}
-                strength={0.3}
-                className="relative inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-[#212121] rounded-[17px] px-8 py-4 text-base font-medium border border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-black"
-              >
-                <span className="relative inline-flex">
-                  <Bot className="w-5 h-5 animate-bounce" />
-                  <span className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-green-500 border border-[#212121] animate-pulse" />
-                </span>
-                Say Hello
-              </MagneticButton>
-            )}
-
-            {/* Inline chat panel — replaces the button once opened */}
-            {isChatOpen && (
-              <div className="relative mx-auto max-w-[640px] text-left">
-                <ChatPanel variant="inline" />
-              </div>
-            )}
+            <a
+              ref={helloRef as React.RefObject<HTMLAnchorElement>}
+              href={`mailto:${CONTACT.email}`}
+              className="relative inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-[#212121] rounded-[17px] px-8 py-4 text-base font-medium border border-primary will-change-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+            >
+              <Mail className="w-5 h-5" />
+              Say Hello
+            </a>
           </div>
         </FadeIn>
 
@@ -179,16 +158,6 @@ const Footer = () => {
                 Connect
               </h4>
               <ul className="space-y-3 text-sm text-white/60">
-                <li className="flex items-center gap-2">
-                  <Phone className="w-4 h-4 text-primary shrink-0" />
-                  <a
-                    href={`tel:${CONTACT.mobile}`}
-                    className="hover:text-primary transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
-                  >
-                    {CONTACT.mobile}
-                  </a>
-                </li>
-
                 <li className="flex items-center gap-2">
                   <Mail className="w-4 h-4 text-primary shrink-0" />
                   <a

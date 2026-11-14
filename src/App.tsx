@@ -4,29 +4,26 @@ import About from "./components/sections/About";
 import RadialGradientBackground from "./components/backgrounds/RadialGradientBackground";
 import Skills from "./components/sections/Skills";
 import Footer from "./components/layout/Footer";
-import WhatsAppButton from "./components/ui/WhatsAppButton";
-import { WhatsAppChatProvider } from "./context/WhatsAppChatContext";
+import BackToTopButton from "./components/ui/BackToTopButton";
 import Projects from "./components/sections/Projects";
 import Certificate from "./components/sections/Certifications";
 
 const App = () => {
   return (
-    <WhatsAppChatProvider>
-      <div className="min-h-screen bg-black">
-        <RadialGradientBackground variant="full-page" />
-        <div className="noise-overlay" aria-hidden="true" />
-        <NavBar />
-        <main>
-          <Hero />
-          <About />
-          <Skills />
-          <Projects />
-          <Certificate />
-        </main>
-        <Footer />
-        <WhatsAppButton />
-      </div>
-    </WhatsAppChatProvider>
+    <div className="min-h-screen bg-black">
+      <RadialGradientBackground variant="full-page" />
+      <div className="noise-overlay" aria-hidden="true" />
+      <NavBar />
+      <main>
+        <Hero />
+        <About />
+        <Skills />
+        <Projects />
+        <Certificate />
+      </main>
+      <Footer />
+      <BackToTopButton />
+    </div>
   );
 };
 
