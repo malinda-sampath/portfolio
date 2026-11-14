@@ -1,170 +1,260 @@
-@import url("https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap");
 @import "tailwindcss";
 
+/*
+  Black surfaces, neon green for actions and success, yellow as the second
+  accent (keywords, in-progress states). Terminal-flavoured, kept light.
+*/
 @theme {
-  --font-display: "Urbanist", sans-serif;
+  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
   --breakpoint-3xl: 1920px;
-  --color-primary: #7cff5b; /* Main neon green */
-  --color-primary-light: #b7ff9a; /* Light glow */
-  --color-primary-lighter: #d9ffc9; /* Soft highlight */
-  --color-primary-dark: #45d13a; /* Dark green */
-  --color-primary-darker: #239b2a; /* Deep green */
-  --color-primary-hover: #92ff73; /* Hover state */
+
+  --color-bg: #050705;
+  --color-bg-deep: #000000;
+  --color-panel: #0e130e;
+  --color-panel-glass: rgb(14 19 14 / 0.78);
+  --color-line: #1f2b1f;
+  --color-fg: #e9f1e7;
+  --color-muted: #98a698;
+
+  --color-accent: #7cff5b;
+  --color-accent-hover: #92ff73;
+  --color-link: #7cff5b;
+  --color-green: #7cff5b;
+  --color-orange: #ffc107;
+  --color-yellow: #ffc107;
+  --color-red: #ff5f56;
+  --color-purple: #b7ff9a;
 }
 
 @layer base {
   html {
-    font-family: var(--font-display);
+    font-family: var(--font-sans);
     scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+    color-scheme: dark;
   }
+
   body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: #000000;
-    color: #ffffff;
+    background-color: var(--color-bg);
+    color: var(--color-fg);
     overflow-x: hidden;
   }
 
-  /* Custom scrollbar */
-  ::-webkit-scrollbar {
-    width: 10px;
+  ::selection {
+    background: #7cff5b;
+    color: #000;
   }
 
-  ::-webkit-scrollbar-track {
-    background: #0a0a0a;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, #7cff5b, #39d353);
-    border-radius: 5px;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, #b7ff9a, #7cff5b);
-  }
-
-  /* Firefox Scrollbar */
-  * {
-    scrollbar-width: thin;
-    scrollbar-color: #191d19 #0a0a0a;
-  }
-
-  /* Hide Scrollbar for Carousel */
-  .hide-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-
-  .hide-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-
-  /* Animation Keyframes */
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-
-    to {
-      opacity: 1;
-    }
-  }
-
-  @keyframes pulse {
-    0%,
-    100% {
-      opacity: 0.3;
-    }
-
-    50% {
-      opacity: 0.5;
-    }
-  }
-
-  /* Utility Classes */
-  .animate-fadeIn {
-    animation: fadeIn 0.5s ease-out;
-  }
-
-  .animate-pulse {
-    animation: pulse 3s ease-in-out infinite;
-  }
-
-  .animate-pulse-slow {
-    animation: spin 5s linear infinite;
-  }
-
-  @keyframes identifier {
-    from {
-      transform: rotate(0deg);
-    }
-
-    to {
-      transform: rotate(360deg);
-    }
-  }
-
-  @keyframes spin {
-    to {
-      transform: rotate(360deg);
-    }
-  }
-
-  .animate-spin-slow {
-    animation: spin 6s linear infinite;
-  }
-
-  /* Line Clamp */
-  .line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  .line-clamp-3 {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-}
-
-@layer base {
-  /* --- Noise texture: kills the "flat AI gradient" look --- */
-  .noise-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 1;
-    pointer-events: none;
-    opacity: 0.035;
-    mix-blend-mode: overlay;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  }
-
-  /* --- Glass edge highlight: thin inner light catching the top edge --- */
-  .glass-edge {
-    position: relative;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow:
-      inset 0 1px 0 0 rgba(255, 255, 255, 0.12),
-      0 8px 24px -12px rgba(0, 0, 0, 0.5);
-  }
-
-  /* --- Consistent, visible keyboard focus everywhere --- */
   :focus-visible {
-    outline: 2px solid var(--color-primary);
+    outline: 2px solid var(--color-link);
     outline-offset: 3px;
     border-radius: 4px;
   }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-bg-deep);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-line);
+    border-radius: 5px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #2f4a2c;
+  }
 }
 
-@keyframes traceMove {
+@layer components {
+  /* Tool-window style surface */
+  .panel {
+    backdrop-filter: blur(10px);
+    background-color: var(--color-panel-glass);
+    border: 1px solid var(--color-line);
+    border-radius: 8px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1.15rem;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    font-size: 0.925rem;
+    font-weight: 500;
+    line-height: 1.25;
+    cursor: pointer;
+    transition:
+      background-color 150ms ease,
+      border-color 150ms ease,
+      color 150ms ease;
+  }
+
+  .btn-primary {
+    background-color: var(--color-accent);
+    color: #061006;
+    font-weight: 600;
+  }
+  .btn-primary:hover {
+    background-color: var(--color-accent-hover);
+  }
+
+  .btn-line {
+    background-color: var(--color-panel);
+    border-color: #2c3a2c;
+    color: var(--color-fg);
+  }
+  .btn-line:hover {
+    border-color: var(--color-muted);
+    background-color: #151d15;
+  }
+
+  .link {
+    color: var(--color-link);
+    text-decoration: underline;
+    text-decoration-color: rgb(124 255 91 / 0.35);
+    text-underline-offset: 4px;
+    transition: text-decoration-color 150ms ease;
+  }
+  .link:hover {
+    text-decoration-color: var(--color-link);
+  }
+
+  /* Small monospace tag, used for tech names */
+  .chip {
+    display: inline-block;
+    padding: 0.2rem 0.55rem;
+    border-radius: 5px;
+    border: 1px solid var(--color-line);
+    background-color: var(--color-bg);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--color-fg);
+  }
+}
+
+/* --- Page-load: hero content rises in sequence --- */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rise {
+  animation: rise 600ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * 80ms);
+}
+
+/* --- Request pulse travelling along the stack rail --- */
+@keyframes travel {
   0% {
-    transform: translateX(-100%);
+    left: 0%;
+    opacity: 0;
+  }
+  6% {
+    opacity: 1;
+  }
+  94% {
+    opacity: 1;
   }
   100% {
-    transform: translateX(400%);
+    left: 100%;
+    opacity: 0;
+  }
+}
+
+.rail-pulse {
+  animation: travel 5.5s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.caret {
+  animation: blink 1.1s steps(1) infinite;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 180ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .rise,
+  .animate-fadeIn,
+  .caret {
+    animation: none;
+  }
+  .rail-pulse {
+    animation: none;
+    display: none;
+  }
+}
+
+/* --- Page background (RadialGradientBackground): slow pulse for the
+   gradient blobs, plus a film-grain overlay --- */
+/* Blobs breathe and drift a little, so the gradient is never static. */
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    opacity: 0.55;
+    transform: translate3d(2.5rem, -2rem, 0) scale(1.12);
+  }
+}
+
+.bg-grid {
+  background-image:
+    linear-gradient(to right, rgb(124 255 91 / 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(124 255 91 / 0.06) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 85% 70% at 50% 0%, #000 20%, transparent 80%);
+}
+
+.animate-pulse {
+  animation: pulse 3s ease-in-out infinite;
+}
+
+.noise-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: -5;
+  pointer-events: none;
+  opacity: 0.035;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-pulse {
+    animation: none;
   }
 }

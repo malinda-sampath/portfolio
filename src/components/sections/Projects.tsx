@@ -1,87 +1,75 @@
 import { useMemo, useState } from "react";
 import { projects, categories, type Project } from "../../data/projects";
-import FadeIn from "../animations/Fadein";
-import ProjectTile from "../ui/ProjectTile";
+import ProjectCard from "../ui/ProjectCard";
 import ProjectModal from "../ui/ProjectModel";
+import SectionHeader from "../ui/SectionHeader";
 
 const Projects = () => {
   const [activeCategory, setActiveCategory] = useState<string>("All");
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   const filtered = useMemo(() => {
-    if (activeCategory === "All") return projects;
-    return projects.filter((p) => p.category === activeCategory);
+    const list =
+      activeCategory === "All"
+        ? projects
+        : projects.filter((p) => p.category === activeCategory);
+    // Featured work leads
+    return [...list].sort(
+      (a, b) => Number(!!b.featured) - Number(!!a.featured),
+    );
   }, [activeCategory]);
 
+  const showFilter = categories.length > 1;
+
   return (
-    <section id="projects" className="relative py-20 overflow-hidden">
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <FadeIn delay={0}>
-          <div className="text-center mb-4">
-            <div className="inline-flex items-center gap-2.5 px-5 py-2.5 border border-primary/30 bg-primary/10 rounded-full w-fit mx-auto mb-6">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary motion-safe:animate-pulse" />
-              <span className="text-sm text-primary font-medium font-mono">
-                {String(projects.length).padStart(2, "0")} Projects Shipped
-              </span>
-            </div>
+    <section id="projects" className="py-16 lg:py-20">
+      <div className="max-w-6xl mx-auto px-5 sm:px-6 lg:px-8">
+        <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-5 mb-10">
+          <div className="[&>div]:mb-0">
+            <SectionHeader
+              command="ls projects/"
+              title="Projects"
+              description="Click a screenshot to see more of each project."
+            />
           </div>
-        </FadeIn>
 
-        <FadeIn delay={60}>
-          <h2 className="text-4xl lg:text-5xl font-normal text-white leading-tight text-center mb-4">
-            Selected Work
-          </h2>
-        </FadeIn>
-
-        <FadeIn delay={120}>
-          <p className="text-base text-white/60 max-w-xl mx-auto text-center mb-12">
-            Click any project to see the full breakdown — screenshots, demo, and
-            stack.
-          </p>
-        </FadeIn>
-
-        {/* Category Filter */}
-        <FadeIn delay={180}>
-          <div className="flex flex-wrap justify-center gap-2 mb-14">
-            <button
-              onClick={() => setActiveCategory("All")}
-              className={`px-4 py-2 text-sm font-medium rounded-full border transition-all duration-300 ${
-                activeCategory === "All"
-                  ? "bg-primary text-black border-primary"
-                  : "bg-white/5 text-white/70 border-white/10 hover:border-white/25 hover:text-white"
-              }`}
+          {showFilter && (
+            <div
+              role="group"
+              aria-label="Filter projects by category"
+              className="flex flex-wrap gap-1 p-1 rounded-lg bg-bg-deep border border-line"
             >
-              All
-            </button>
-            {categories.map((category) => (
-              <button
-                key={category}
-                onClick={() => setActiveCategory(category)}
-                className={`px-4 py-2 text-sm font-medium rounded-full border transition-all duration-300 ${
-                  activeCategory === category
-                    ? "bg-primary text-black border-primary"
-                    : "bg-white/5 text-white/70 border-white/10 hover:border-white/25 hover:text-white"
-                }`}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-        </FadeIn>
+              {["All", ...categories].map((category) => (
+                <button
+                  key={category}
+                  onClick={() => setActiveCategory(category)}
+                  aria-pressed={activeCategory === category}
+                  className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors duration-150 ${
+                    activeCategory === category
+                      ? "bg-panel text-white shadow-[inset_0_0_0_1px_var(--color-line)]"
+                      : "text-muted hover:text-fg"
+                  }`}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
 
-        {/* Compact tile grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {filtered.map((project, index) => (
-            <FadeIn key={project.id} delay={index * 70}>
-              <ProjectTile project={project} onOpen={setSelectedProject} />
-            </FadeIn>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {filtered.map((project) => (
+            <ProjectCard
+              key={project.id}
+              project={project}
+              onOpen={setSelectedProject}
+            />
           ))}
         </div>
 
         {filtered.length === 0 && (
-          <p className="text-center text-white/40 py-16 font-mono text-sm">
-            No projects in this category yet.
+          <p className="py-16 text-muted">
+            Nothing in this category yet. Choose another to see more work.
           </p>
         )}
       </div>

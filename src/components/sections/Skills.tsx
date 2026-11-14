@@ -1,7 +1,7 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Code2 } from "lucide-react";
 import { skills } from "../../data/skills";
-import FadeIn from "../animations/Fadein";
+import SectionHeader from "../ui/SectionHeader";
 
 type Skill = {
   id: number;
@@ -9,136 +9,181 @@ type Skill = {
   icon: string;
 };
 
-const CATEGORIES = Object.keys(skills);
+const SKILLS = skills as Record<string, Skill[]>;
+
+/*
+  The stack is drawn in the order a request meets it. Each stop pulls its
+  tools from one or more categories in data/skills.ts, so editing that file
+  updates the diagram. Categories not named here fall into "Also in the toolbox".
+*/
+const STOPS: { title: string; body: string; groups: string[] }[] = [
+  {
+    title: "Languages",
+    body: "What the code is written in.",
+    groups: ["Languages"],
+  },
+  {
+    title: "Gateway & Identity",
+    body: "API management, authentication and single sign-on.",
+    groups: ["Identity & API Management"],
+  },
+  {
+    title: "Services",
+    body: "REST APIs and microservices.",
+    groups: ["Backend Development"],
+  },
+  {
+    title: "Messaging",
+    body: "Queues and event brokers between services.",
+    groups: ["Messaging & Integration"],
+  },
+  {
+    title: "Data",
+    body: "Relational databases.",
+    groups: ["Databases"],
+  },
+];
+
+const PLATFORM_GROUP = "Cloud & DevOps";
+
+const placed = new Set([...STOPS.flatMap((s) => s.groups), PLATFORM_GROUP]);
+const AROUND = Object.keys(SKILLS).filter((category) => !placed.has(category));
 
 const SkillIcon = ({ skill }: { skill: Skill }) => {
   const [errored, setErrored] = useState(!skill.icon);
 
-  if (errored) {
-    return (
-      <div className="w-4 h-4 rounded bg-primary/10 flex items-center justify-center shrink-0">
-        <Code2 className="w-2.5 h-2.5 text-primary" />
-      </div>
-    );
-  }
-
   return (
-    <img
-      src={skill.icon}
-      alt=""
-      loading="lazy"
-      onError={() => setErrored(true)}
-      className="w-4 h-4 object-contain shrink-0"
-    />
+    // Light tile so dark-on-transparent logos stay visible on the dark theme
+    <span className="w-6 h-6 rounded bg-fg flex items-center justify-center shrink-0">
+      {errored ? (
+        <Code2 className="w-3.5 h-3.5 text-accent" aria-hidden="true" />
+      ) : (
+        <img
+          src={skill.icon}
+          alt=""
+          loading="lazy"
+          onError={() => setErrored(true)}
+          className="w-4 h-4 object-contain"
+        />
+      )}
+    </span>
   );
 };
 
+const SkillList = ({ category }: { category: string }) => (
+  <ul className="space-y-2.5">
+    {(SKILLS[category] ?? []).map((skill) => (
+      <li key={skill.id} className="flex items-center gap-2.5">
+        <SkillIcon skill={skill} />
+        <span className="text-[0.925rem] text-fg">{skill.name}</span>
+      </li>
+    ))}
+  </ul>
+);
+
 const Skills = () => {
-  const [activeCategory, setActiveCategory] = useState<string>("All");
-
-  const visibleEntries = useMemo(() => {
-    const entries = Object.entries(skills) as [string, Skill[]][];
-    if (activeCategory === "All") return entries;
-    return entries.filter(([category]) => category === activeCategory);
-  }, [activeCategory]);
-
-  const totalCount = useMemo(
-    () => Object.values(skills).reduce((sum, list) => sum + list.length, 0),
-    [],
-  );
-
   return (
-    <section id="skills" className="relative overflow-hidden">
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <FadeIn delay={0}>
-          <div className="text-center mb-4">
-            <div className="inline-flex items-center gap-2.5 px-5 py-2.5 border border-primary/30 bg-primary/10 rounded-full w-fit mb-6">
-              <Code2 className="w-4 h-4 text-primary" />
-              <span className="text-sm text-primary font-medium">
-                {totalCount} Technologies
-              </span>
-            </div>
+    <section
+      id="skills"
+      className="py-16 lg:py-20 overflow-hidden"
+    >
+      <div className="max-w-6xl mx-auto px-5 sm:px-6 lg:px-8">
+        <SectionHeader
+          command="ls stack/"
+          title="Tech stack"
+          description="The languages I write in, then the stack in the order a request travels through a backend: gateway, services, messaging, database."
+        />
+
+        {/* Request path */}
+        <p className="font-mono text-sm mb-5">
+          <span className="text-muted">request</span>{" "}
+          <span className="text-yellow font-medium">POST</span>{" "}
+          <span className="text-fg">/api/orders</span>
+        </p>
+
+        <div className="relative">
+          {/* Rail: horizontal on desktop, vertical on small screens */}
+          <div
+            aria-hidden="true"
+            className="absolute bg-line left-[6px] top-2 bottom-0 w-0.5 lg:left-0 lg:right-0 lg:top-[6px] lg:bottom-auto lg:w-auto lg:h-0.5"
+          >
+            <span className="rail-pulse hidden lg:block absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-14 h-0.5 bg-linear-to-r from-transparent to-green shadow-[0_0_10px_1px_rgba(124,255,91,0.6)]" />
           </div>
-        </FadeIn>
 
-        <FadeIn delay={60}>
-          <h2 className="text-4xl lg:text-5xl font-normal text-white leading-tight text-center mb-4">
-            Tools I Work With
-          </h2>
-        </FadeIn>
-
-        <FadeIn delay={120}>
-          <p className="text-base text-white/60 max-w-xl mx-auto text-center mb-12">
-            A stack built across backend systems, cloud infrastructure, and
-            modern frontend tooling.
-          </p>
-        </FadeIn>
-
-        {/* Category Filter */}
-        <FadeIn delay={180}>
-          <div className="flex flex-wrap justify-center gap-2 mb-14">
-            <button
-              onClick={() => setActiveCategory("All")}
-              className={`px-4 py-2 text-sm font-medium rounded-full border transition-all duration-300 ${
-                activeCategory === "All"
-                  ? "bg-primary text-black border-primary"
-                  : "bg-white/5 text-white/70 border-white/10 hover:border-white/25 hover:text-white"
-              }`}
-            >
-              All
-            </button>
-            {CATEGORIES.map((category) => (
-              <button
-                key={category}
-                onClick={() => setActiveCategory(category)}
-                className={`px-4 py-2 text-sm font-medium rounded-full border transition-all duration-300 ${
-                  activeCategory === category
-                    ? "bg-primary text-black border-primary"
-                    : "bg-white/5 text-white/70 border-white/10 hover:border-white/25 hover:text-white"
-                }`}
+          <ol className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+            {STOPS.map((stop) => (
+              <li
+                key={stop.title}
+                className="relative pl-8 lg:pl-0 lg:pt-8 flex flex-col"
               >
-                {category}
-              </button>
-            ))}
-          </div>
-        </FadeIn>
-
-        {/* Skill Groups */}
-        <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
-          {visibleEntries.map(([category, skillList], groupIndex) => (
-            <FadeIn key={category} delay={groupIndex * 80}>
-              <div className="group relative break-inside-avoid">
-                <div className="absolute inset-0 bg-linear-to-br from-primary/10 to-primary/5 rounded-2xl blur-xl opacity-0 group-hover:opacity-60 transition-opacity duration-300" />
-                <div className="relative bg-white/5 border border-white/10 rounded-2xl p-6 hover:border-primary/30 transition-all duration-300">
-                  <div className="flex items-center justify-between mb-5">
-                    <h3 className="text-base font-semibold text-white tracking-wide">
-                      {category}
-                    </h3>
-                    <span className="text-xs font-mono text-white/40">
-                      {String(skillList.length).padStart(2, "0")}
-                    </span>
-                  </div>
-
-                  {/* Compact chip layout instead of stacked rows */}
-                  <div className="flex flex-wrap gap-2">
-                    {skillList.map((skill) => (
-                      <div
-                        key={skill.id}
-                        className="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-full bg-white/5 border border-white/10 hover:border-primary/40 hover:bg-primary/5 transition-colors duration-200"
-                      >
-                        <SkillIcon skill={skill} />
-                        <span className="text-xs text-white/80 whitespace-nowrap">
-                          {skill.name}
-                        </span>
+                {/* Node on the rail */}
+                <span
+                  aria-hidden="true"
+                  className="absolute w-3.5 h-3.5 rounded-full bg-bg-deep border-2 border-green left-0 top-5 lg:top-0 lg:left-5"
+                />
+                <div className="panel p-5 lg:p-4 flex-1">
+                  <h3 className="text-base font-semibold text-white mb-1">
+                    {stop.title}
+                  </h3>
+                  <p className="text-sm text-muted leading-relaxed mb-5">
+                    {stop.body}
+                  </p>
+                  <div className="space-y-5">
+                    {stop.groups.map((group, i) => (
+                      <div key={group}>
+                        {i > 0 && (
+                          <p className="font-mono text-xs text-muted mb-2.5">
+                            {`// ${group.toLowerCase()}`}
+                          </p>
+                        )}
+                        <SkillList category={group} />
                       </div>
                     ))}
                   </div>
                 </div>
-              </div>
-            </FadeIn>
-          ))}
+              </li>
+            ))}
+          </ol>
         </div>
+
+        {/* Platform: the layer everything above runs on */}
+        <div className="panel mt-5 p-5 lg:flex lg:items-center lg:gap-8 border-dashed">
+          <div className="lg:w-56 shrink-0 mb-4 lg:mb-0">
+            <h3 className="text-base font-semibold text-white mb-1">
+              Cloud & DevOps
+            </h3>
+            <p className="text-sm text-muted leading-relaxed">
+              What all of it is built, shipped and run on.
+            </p>
+          </div>
+          <ul className="flex flex-wrap gap-x-7 gap-y-3">
+            {(SKILLS[PLATFORM_GROUP] ?? []).map((skill) => (
+              <li key={skill.id} className="flex items-center gap-2.5">
+                <SkillIcon skill={skill} />
+                <span className="text-[0.925rem] text-fg">{skill.name}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Everything that isn't on the request path */}
+        {AROUND.length > 0 && (
+          <div className="mt-12">
+            <h3 className="text-lg font-semibold text-white mb-5">
+              Also in the toolbox
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 sm:[&>*:last-child:nth-child(odd)]:col-span-2 md:[&>*:last-child:nth-child(odd)]:col-span-1">
+              {AROUND.map((category) => (
+                <div key={category} className="panel p-5">
+                  <p className="text-sm font-medium text-white mb-4">
+                    {category}
+                  </p>
+                  <SkillList category={category} />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );

@@ -2,7 +2,10 @@ import portfolioHero from "../../public/assets/projects/portfolio/Hero_section.p
 import connect from "../../public/assets/projects/portfolio/Connect.png";
 import skills from "../../public/assets/projects/portfolio/Skills.png";
 import azure from "../../public/assets/projects/portfolio/Azure.png";
-import apirraHero from "../../public/assets/projects/apirra/Hero_section.png";
+import portfolioProjects from "../../public/assets/projects/portfolio/Projects.png";
+import apirraLanding from "../../public/assets/projects/apirra/Landing.png";
+import apirraExplorer from "../../public/assets/projects/apirra/Explorer.jpg";
+import apirraEndpoint from "../../public/assets/projects/apirra/Endpoint.jpg";
 
 export type Project = {
   id: number;
@@ -27,7 +30,7 @@ export const projects: Project[] = [
     description:
       "A modern developer portfolio built with React, TypeScript, and Tailwind CSS, showcasing software engineering projects, technical skills, and professional experience. Deployed on Azure Kubernetes Service with Docker, and automated CI/CD pipelines using GitHub Actions.",
     image: portfolioHero,
-    gallery: [skills, connect, azure],
+    gallery: [skills, portfolioProjects, connect, azure],
     category: "Frontend",
     tech: [
       "React",
@@ -45,12 +48,12 @@ export const projects: Project[] = [
     year: "2026",
   },
   {
-    id: 2,
-    title: "Apirra — API Explorer",
+    id: 5,
+    title: "Apirra",
     description:
-      "A browser-based, fully client-side OpenAPI/Swagger explorer, similar in spirit to Postman or Swagger UI. Paste any spec URL and it parses every endpoint into a searchable sidebar, auto-generates example request bodies from the schema, and lets you 'Try it out' — sending real requests and inspecting live responses, copying a ready-to-run cURL command, or replaying past requests from a local history. No backend or signup required; every request goes straight from the browser to the target API.",
-    image: apirraHero,
-    gallery: [],
+      "A browser-based API explorer. Paste the URL of an OpenAPI or Swagger document and Apirra lists every endpoint, pre-fills request bodies from the schema, and sends real requests straight from the tab, with no install and no account. It also copies any request as cURL and keeps a short history per endpoint.",
+    image: apirraLanding,
+    gallery: [apirraExplorer, apirraEndpoint],
     category: "Developer Tools",
     tech: [
       "React",

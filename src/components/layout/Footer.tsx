@@ -1,236 +1,134 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaGithub } from "react-icons/fa";
 import { FaLinkedin } from "react-icons/fa6";
-import { Mail, MapPin, Phone, Bot } from "lucide-react";
+import { Check, Copy, Download, Mail, MapPin } from "lucide-react";
 import { PERSONAL_INFO, NAV_LINKS } from "../../utills/constants";
 import { scrollToSection } from "../../hooks/useScrollSpy";
-import MagneticButton from "../ui/MagneticButton";
-import FadeIn from "../animations/Fadein";
 import { SYSTEM_INFO } from "../../utills/system";
-import { useWhatsAppChat } from "../../context/WhatsAppChatContext";
-import ChatPanel from "../ui/ChatPanel";
+import SectionHeader from "../ui/SectionHeader";
 
-const BUILD_VERSION = SYSTEM_INFO.buildVersion;
-const DEPLOY_DATE = SYSTEM_INFO.deployDate;
+const EMAIL = PERSONAL_INFO.email;
 
-// Single source of truth for fallback contact info
-const CONTACT = {
-  email: PERSONAL_INFO.email ?? "hello@example.com",
-  mobile: PERSONAL_INFO.mobile ?? "+94 77 123 4567",
-  location: PERSONAL_INFO.location ?? "Remote",
-};
-
-const SOCIALS = [
+const LINKS = [
+  { label: "GitHub", icon: FaGithub, href: PERSONAL_INFO.github },
+  { label: "LinkedIn", icon: FaLinkedin, href: PERSONAL_INFO.linkedin },
   {
-    id: "github",
-    label: "GitHub",
-    icon: FaGithub,
-    href: `${PERSONAL_INFO.github}`,
-  },
-  {
-    id: "linkedin",
-    label: "LinkedIn",
-    icon: FaLinkedin,
-    href: `${PERSONAL_INFO.linkedin}`,
-  },
-  {
-    id: "email",
-    label: "Email",
-    icon: Mail,
-    href: `mailto:${CONTACT.email}`,
-  },
-  {
-    id: "mobile",
-    label: "Mobile",
-    icon: Phone,
-    href: `tel:${CONTACT.mobile}`,
+    label: "Download CV",
+    icon: Download,
+    href: `${import.meta.env.BASE_URL}${PERSONAL_INFO.resume}`,
   },
 ];
 
-// ids that should never open in a new tab
-const SAME_TAB_IDS = ["email", "mobile"];
-
 const Footer = () => {
-  const [uptime, setUptime] = useState("00:00:00");
-  const { isChatOpen, setIsChatOpen } = useWhatsAppChat();
+  const [copied, setCopied] = useState(false);
+  const timer = useRef<number | undefined>(undefined);
 
-  useEffect(() => {
-    const start = Date.now();
-    const tick = () => {
-      const diff = Date.now() - start;
-      const h = String(Math.floor(diff / 3_600_000)).padStart(2, "0");
-      const m = String(Math.floor((diff % 3_600_000) / 60_000)).padStart(
-        2,
-        "0",
-      );
-      const s = String(Math.floor((diff % 60_000) / 1000)).padStart(2, "0");
-      setUptime(`${h}:${m}:${s}`);
-    };
-    const id = setInterval(tick, 1000);
-    return () => clearInterval(id);
-  }, []);
+  useEffect(() => () => window.clearTimeout(timer.current), []);
+
+  const copyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(EMAIL);
+      setCopied(true);
+      window.clearTimeout(timer.current);
+      timer.current = window.setTimeout(() => setCopied(false), 2500);
+    } catch {
+      // Clipboard blocked: fall back to opening the mail client
+      window.location.href = `mailto:${EMAIL}`;
+    }
+  };
 
   return (
-    <footer id="contact" className="relative pt-28 pb-8 overflow-hidden">
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* CTA Block */}
-        <FadeIn delay={0}>
-          <div className="glass-edge rounded-3xl px-8 py-14 md:py-16 text-center mb-20 relative overflow-hidden">
-            <div
-              className="absolute -top-24 left-1/2 -translate-x-1/2 w-[36rem] h-[20rem] rounded-full opacity-40 pointer-events-none"
-              style={{
-                background:
-                  "radial-gradient(circle, rgba(255,193,7,0.35) 0%, transparent 70%)",
-                filter: "blur(60px)",
-              }}
-              aria-hidden="true"
+    <footer id="contact" className="pt-16 lg:pt-20 pb-24 xl:pb-8">
+      {/* Extra bottom padding below xl keeps the fixed back-to-top button
+          from covering the footer links */}
+      <div className="max-w-6xl mx-auto px-5 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-10 gap-y-10 pb-14 lg:pb-20">
+          <div className="lg:col-span-7">
+            <SectionHeader
+              command="./contact.sh"
+              title="Let's build something worth shipping."
+              description="Open to backend engineering, cloud-native development, and opportunities to build scalable software systems."
             />
-            <span className="relative inline-flex items-center gap-2 px-4 py-1.5 mb-6 text-xs font-mono tracking-[2px] uppercase text-primary bg-primary/10 border border-primary/20 rounded-full">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary motion-safe:animate-pulse" />
+
+            <p className="flex items-center gap-2 text-sm text-green mb-6">
+              <span className="w-2 h-2 rounded-full bg-green" />
               Available for work
-            </span>
-            <h2 className="relative text-3xl md:text-4xl lg:text-5xl font-normal text-white leading-tight mb-4">
-              Let's build something worth shipping.
-            </h2>
-            <p className="relative text-white/60 max-w-md mx-auto mb-8">
-              Open to backend engineering, cloud-native development, and
-              opportunities to build scalable software systems.
             </p>
 
-            {!isChatOpen && (
-              <MagneticButton
-                onClick={() => setIsChatOpen(true)}
-                strength={0.3}
-                className="relative inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-[#212121] rounded-[17px] px-8 py-4 text-base font-medium border border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+            {/* Email shown like a request field: label, value, action */}
+            <div className="flex items-stretch max-w-xl rounded-lg border border-line bg-bg-deep overflow-hidden mb-4">
+              <span className="hidden sm:flex items-center px-3.5 font-mono text-xs font-medium text-link border-r border-line bg-panel">
+                MAILTO
+              </span>
+              <a
+                href={`mailto:${EMAIL}`}
+                className="flex-1 min-w-0 px-3.5 py-3 font-mono text-[0.8rem] sm:text-[0.95rem] text-white break-all sm:break-normal sm:truncate hover:text-link transition-colors duration-150"
               >
-                <span className="relative inline-flex">
-                  <Bot className="w-5 h-5 animate-bounce" />
-                  <span className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-green-500 border border-[#212121] animate-pulse" />
+                {EMAIL}
+              </a>
+              <button
+                onClick={copyEmail}
+                className="flex shrink-0 items-center gap-2 px-3.5 text-sm font-medium text-fg border-l border-line bg-panel hover:bg-white/10 transition-colors duration-150"
+              >
+                {copied ? (
+                  <Check className="w-4 h-4 text-green" />
+                ) : (
+                  <Copy className="w-4 h-4" />
+                )}
+                {/* Icon-only on phones so the address has room */}
+                <span aria-live="polite" className="sr-only sm:not-sr-only">
+                  {copied ? "Copied" : "Copy"}
                 </span>
-                Say Hello
-              </MagneticButton>
-            )}
+              </button>
+            </div>
 
-            {/* Inline chat panel — replaces the button once opened */}
-            {isChatOpen && (
-              <div className="relative mx-auto max-w-[640px] text-left">
-                <ChatPanel variant="inline" />
-              </div>
-            )}
+            <a href={`mailto:${EMAIL}`} className="btn btn-primary">
+              <Mail className="w-4 h-4" />
+              Send an email
+            </a>
           </div>
-        </FadeIn>
 
-        {/* Link Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
-          {/* Brand */}
-          <FadeIn delay={80}>
-            <div>
-              <h3 className="text-xl font-bold text-white mb-3">
-                {PERSONAL_INFO.name}
-              </h3>
-              <p className="text-sm text-white/50 leading-relaxed mb-6">
-                {PERSONAL_INFO.title} building reliable, cloud-native software.
-              </p>
-              <div className="flex items-center gap-3">
-                {SOCIALS.map((social) => {
-                  const isSameTab = SAME_TAB_IDS.includes(social.id);
-                  return (
-                    <a
-                      key={social.id}
-                      href={social.href}
-                      target={isSameTab ? undefined : "_blank"}
-                      rel={isSameTab ? undefined : "noopener noreferrer"}
-                      aria-label={social.label}
-                      className="scan-hover w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/10 text-white/60 hover:text-primary hover:border-primary/40 transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                    >
-                      <social.icon className="w-4 h-4" />
-                    </a>
-                  );
-                })}
-              </div>
-            </div>
-          </FadeIn>
-
-          {/* Navigate */}
-          <FadeIn delay={140}>
-            <div>
-              <h4 className="text-xs font-mono tracking-[2px] uppercase text-white/40 mb-5">
-                Navigate
-              </h4>
-              <ul className="space-y-3">
-                {NAV_LINKS.map((link) => (
-                  <li key={link.id}>
-                    <button
-                      onClick={() => scrollToSection(link.id)}
-                      className="text-sm text-white/60 hover:text-primary transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
-                    >
-                      {link.label}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </FadeIn>
-
-          {/* Connect */}
-          <FadeIn delay={200}>
-            <div>
-              <h4 className="text-xs font-mono tracking-[2px] uppercase text-white/40 mb-5">
-                Connect
-              </h4>
-              <ul className="space-y-3 text-sm text-white/60">
-                <li className="flex items-center gap-2">
-                  <Phone className="w-4 h-4 text-primary shrink-0" />
+          <div className="lg:col-span-4 lg:col-start-9">
+            <ul className="panel divide-y divide-line overflow-hidden">
+              {LINKS.map((link) => (
+                <li key={link.label}>
                   <a
-                    href={`tel:${CONTACT.mobile}`}
-                    className="hover:text-primary transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 px-5 py-3.5 text-[0.95rem] text-fg hover:bg-white/5 hover:text-white transition-colors duration-150"
                   >
-                    {CONTACT.mobile}
+                    <link.icon className="w-[1.125rem] h-[1.125rem] text-muted" />
+                    {link.label}
                   </a>
                 </li>
-
-                <li className="flex items-center gap-2">
-                  <Mail className="w-4 h-4 text-primary shrink-0" />
-                  <a
-                    href={`mailto:${CONTACT.email}`}
-                    className="hover:text-primary transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
-                  >
-                    {CONTACT.email}
-                  </a>
-                </li>
-                <li className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4 text-primary shrink-0" />
-                  {CONTACT.location}
-                </li>
-              </ul>
-            </div>
-          </FadeIn>
-
-          {/* System status */}
-          <FadeIn delay={260}>
-            <div>
-              <h4 className="text-xs font-mono tracking-[2px] uppercase text-white/40 mb-5">
-                System
-              </h4>
-              <ul className="space-y-3 text-xs font-mono text-white/50">
-                <li className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary motion-safe:animate-pulse" />
-                  STATUS: ONLINE
-                </li>
-                <li>SESSION {uptime}</li>
-                <li>BUILD {BUILD_VERSION}</li>
-                <li>UPDATED {DEPLOY_DATE}</li>
-              </ul>
-            </div>
-          </FadeIn>
+              ))}
+              <li className="flex items-center gap-3 px-5 py-3.5 text-[0.95rem] text-muted">
+                <MapPin className="w-[1.125rem] h-[1.125rem]" />
+                {PERSONAL_INFO.location}
+              </li>
+            </ul>
+          </div>
         </div>
 
-        {/* Bottom bar */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-white/10">
-          <p className="text-xs text-white/40 font-mono">
-            © {new Date().getFullYear()} {PERSONAL_INFO.name}. All rights
-            reserved.
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pt-6 border-t border-line text-sm text-muted">
+          <p>
+            © {new Date().getFullYear()} {PERSONAL_INFO.name}
+            <span className="block sm:inline mt-1 sm:mt-0 sm:ml-3 font-mono text-xs">
+              build {SYSTEM_INFO.buildVersion}, updated {SYSTEM_INFO.deployDate}
+            </span>
           </p>
+          <nav aria-label="Footer" className="flex flex-wrap gap-x-6 gap-y-2">
+            {NAV_LINKS.filter((link) => link.id !== "contact").map((link) => (
+              <button
+                key={link.id}
+                onClick={() => scrollToSection(link.id, 64)}
+                className="hover:text-white transition-colors duration-150"
+              >
+                {link.label}
+              </button>
+            ))}
+          </nav>
         </div>
       </div>
     </footer>
