@@ -40,7 +40,7 @@ const RadialGradientBackground = ({
   const mouseRef = useRef({ x: -999, y: -999 });
   const animFrameRef = useRef<number>(0);
   const particlesRef = useRef<Particle[]>([]);
-  const [mouseGlow, setMouseGlow] = useState({ x: -999, y: -999 });
+  const glowRef = useRef<HTMLDivElement>(null);
   const [reducedMotion, setReducedMotion] = useState<boolean>(() =>
     typeof window !== "undefined"
       ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -74,34 +74,75 @@ const RadialGradientBackground = ({
 
     const handleVisibility = () => {
       isVisible = document.visibilityState === "visible";
+      cancelAnimationFrame(animFrameRef.current);
       if (isVisible) draw();
     };
     document.addEventListener("visibilitychange", handleVisibility);
 
-    // Fewer particles on mobile — same ambient feel, lighter cost
-    const count = isMobile ? 18 : 38;
+    // A sparse field: link checks grow with count², so keep it small
+    const count = isMobile ? 10 : 24;
+    const linkDistance = isMobile ? 80 : 120;
+    const linkDistanceSq = linkDistance * linkDistance;
     particlesRef.current = Array.from({ length: count }, () => ({
       x: Math.random() * window.innerWidth,
       y: Math.random() * window.innerHeight,
-      size: Math.random() * 1.5 + 0.4,
-      speedX: (Math.random() - 0.5) * 0.35,
-      speedY: (Math.random() - 0.5) * 0.35,
-      opacity: Math.random() * 0.5 + 0.15,
+      size: Math.random() * 1.3 + 0.4,
+      speedX: (Math.random() - 0.5) * 0.25,
+      speedY: (Math.random() - 0.5) * 0.25,
+      opacity: Math.random() * 0.4 + 0.15,
       color:
         PARTICLE_COLORS[Math.floor(Math.random() * PARTICLE_COLORS.length)],
     }));
 
-    const draw = () => {
+    // Ambient motion doesn't need 60–120fps; cap at ~30fps
+    const FRAME_MS = 1000 / 30;
+    let last = 0;
+
+    const draw = (now = 0) => {
       if (!isVisible) return;
+      animFrameRef.current = requestAnimationFrame(draw);
+      if (now - last < FRAME_MS) return;
+      last = now;
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      particlesRef.current.forEach((p) => {
+      const particles = particlesRef.current;
+      ctx.lineWidth = 0.6;
+
+      // Faint lines between particles that drift close together
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const a = particles[i];
+          const b = particles[j];
+          const dx = a.x - b.x;
+          const dy = a.y - b.y;
+          const dSq = dx * dx + dy * dy;
+          if (dSq < linkDistanceSq) {
+            const d = Math.sqrt(dSq);
+            ctx.strokeStyle = `${a.color}, ${(1 - d / linkDistance) * 0.22})`;
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      particles.forEach((p) => {
         const dx = mouseRef.current.x - p.x;
         const dy = mouseRef.current.y - p.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 180 && dist > 0) {
+        const distSq = dx * dx + dy * dy;
+        if (distSq < 160 * 160 && distSq > 0) {
+          const dist = Math.sqrt(distSq);
           p.x += (dx / dist) * 0.3;
           p.y += (dy / dist) * 0.3;
+
+          // Line from the cursor to particles it is pulling in
+          ctx.strokeStyle = `${p.color}, ${(1 - dist / 160) * 0.3})`;
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(mouseRef.current.x, mouseRef.current.y);
+          ctx.stroke();
         }
 
         p.x += p.speedX;
@@ -117,8 +158,6 @@ const RadialGradientBackground = ({
         ctx.fillStyle = `${p.color}, ${p.opacity})`;
         ctx.fill();
       });
-
-      animFrameRef.current = requestAnimationFrame(draw);
     };
 
     draw();
@@ -137,9 +176,13 @@ const RadialGradientBackground = ({
     const handleMove = (e: MouseEvent) => {
       mouseRef.current = { x: e.clientX, y: e.clientY };
       cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() =>
-        setMouseGlow({ x: e.clientX, y: e.clientY }),
-      );
+      // Move the glow directly instead of re-rendering on every mousemove
+      raf = requestAnimationFrame(() => {
+        const glow = glowRef.current;
+        if (!glow) return;
+        glow.style.opacity = "1";
+        glow.style.transform = `translate3d(${e.clientX - 170}px, ${e.clientY - 170}px, 0)`;
+      });
     };
     window.addEventListener("mousemove", handleMove);
     return () => {
@@ -245,7 +288,7 @@ const RadialGradientBackground = ({
   return (
     <div
       className={`pointer-events-none ${positionClass} inset-0 overflow-hidden`}
-      style={{ zIndex: 0 }}
+      style={{ zIndex: -10 }}
       aria-hidden="true"
     >
       <div className="absolute inset-0 bg-[linear-gradient(160deg,rgba(6,12,10,0.95)_0%,rgba(7,20,14,0.9)_35%,rgba(8,10,16,0.96)_100%)]" />
@@ -266,21 +309,24 @@ const RadialGradientBackground = ({
         />
       ))}
 
-      {variant === "full-page" && !reducedMotion && mouseGlow.x > 0 && (
+      {variant === "full-page" && !reducedMotion && (
         <div
-          className="absolute rounded-full pointer-events-none"
+          ref={glowRef}
+          className="absolute left-0 top-0 rounded-full pointer-events-none"
           style={{
             width: 340,
             height: 340,
-            left: mouseGlow.x - 170,
-            top: mouseGlow.y - 170,
+            opacity: 0,
             background:
               "radial-gradient(circle at center, rgba(123,255,92,0.07) 0%, transparent 70%)",
-            filter: "blur(40px)",
-            transition: "left 0.12s ease-out, top 0.12s ease-out",
+            transition: "transform 0.12s ease-out",
+            willChange: "transform",
           }}
         />
       )}
+
+      {/* Fine grid that fades out away from the top of the screen */}
+      <div className="bg-grid absolute inset-0" />
 
       {!reducedMotion && (
         <canvas

@@ -2,6 +2,10 @@ import portfolioHero from "../../public/assets/projects/portfolio/Hero_section.p
 import connect from "../../public/assets/projects/portfolio/Connect.png";
 import skills from "../../public/assets/projects/portfolio/Skills.png";
 import azure from "../../public/assets/projects/portfolio/Azure.png";
+import portfolioProjects from "../../public/assets/projects/portfolio/Projects.png";
+import apirraLanding from "../../public/assets/projects/apirra/Landing.png";
+import apirraExplorer from "../../public/assets/projects/apirra/Explorer.jpg";
+import apirraEndpoint from "../../public/assets/projects/apirra/Endpoint.jpg";
 
 export type Project = {
   id: number;
@@ -26,7 +30,7 @@ export const projects: Project[] = [
     description:
       "A modern developer portfolio built with React, TypeScript, and Tailwind CSS, showcasing software engineering projects, technical skills, and professional experience. Deployed on Azure Kubernetes Service with Docker, and automated CI/CD pipelines using GitHub Actions.",
     image: portfolioHero,
-    gallery: [skills, connect, azure],
+    gallery: [skills, portfolioProjects, connect, azure],
     category: "Frontend",
     tech: [
       "React",
@@ -41,6 +45,18 @@ export const projects: Project[] = [
     liveUrl: "https://www.malindasampath.com/",
     featured: true,
     role: "Solo project",
+    year: "2026",
+  },
+  {
+    id: 5,
+    title: "Apirra",
+    description:
+      "A browser-based API explorer. Paste the URL of an OpenAPI or Swagger document and Apirra lists every endpoint, pre-fills request bodies from the schema, and sends real requests straight from the tab, with no install and no account. It also copies any request as cURL and keeps a short history per endpoint.",
+    image: apirraLanding,
+    gallery: [apirraExplorer, apirraEndpoint],
+    category: "Developer Tools",
+    tech: ["OpenAPI", "Swagger", "REST APIs"],
+    liveUrl: "https://apirra.malindasampath.com/",
     year: "2026",
   },
   // {
